@@ -1,0 +1,21 @@
+Package: distribglm
+Title: Distributed Generalized Linear Models
+Version: 0.0.0.9000
+Authors@R: c(person(given = "John",
+                    family = "Muschelli",
+                    email = "muschellij2@gmail.com",
+                    role = c("aut", "cre"),
+                    comment = c(ORCID = "0000-0001-6469-1750"))
+                    )
+Description: Distributed generalized linear models (GLM) fitting using 
+    Fisher scoring.  Models are to be fit using a master-secondary 
+    relationship, where the results are written to a synced folder, but
+    data can be elsewhere though it is loaded in memory.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.0.2
+Imports: 
+    readr,
+    stats
