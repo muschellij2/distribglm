@@ -19,3 +19,5 @@ RoxygenNote: 7.0.2
 Imports: 
     readr,
     stats
+URL: https://github.com/muschellij2/distribglm
+BugReports: https://github.com/muschellij2/distribglm/issues
