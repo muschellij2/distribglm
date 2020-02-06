@@ -3,6 +3,7 @@
 \name{clear_model}
 \alias{clear_model}
 \alias{folder_names}
+\alias{model_output_file}
 \alias{master_beta_file}
 \alias{get_current_beta}
 \title{Clear Out Model and Other Helper Functions}
@@ -10,6 +11,8 @@
 clear_model(model_name, synced_folder)
 
 folder_names(synced_folder)
+
+model_output_file(model_name, synced_folder)
 
 master_beta_file(model_name, synced_folder)
 

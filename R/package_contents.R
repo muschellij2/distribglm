@@ -489,6 +489,7 @@ clear_model = function(
   return(invisible(NULL))
 }
 
+
 #' @rdname clear_model
 #' @export
 folder_names = function(synced_folder) {
@@ -500,6 +501,18 @@ folder_names = function(synced_folder) {
     converged_folder = file.path(synced_folder, "models")
   )
   return(L)
+}
+
+#' @rdname clear_model
+#' @export
+model_output_file = function(
+  model_name, synced_folder
+) {
+
+  file_list = folder_names(synced_folder)
+  converged_folder = file_list$converged_folder
+  final_file = file.path(converged_folder, paste0(model_name, ".rds"))
+  final_file
 }
 
 
