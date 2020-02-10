@@ -7,7 +7,7 @@
 estimate_new_beta(
   model_name,
   synced_folder,
-  all_site_names = paste0("site", 1:3),
+  all_site_names = NULL,
   tolerance = 1e-08
 )
 }
@@ -26,4 +26,33 @@ the final estiamtes.
 }
 \description{
 Estimate the updated beta value
+}
+\examples{
+data = data.frame(y = c(0, 0, 1),
+                  pois_y = c(4, 1, 0),
+                  x2 = c(-2.19021287072066,
+                         -0.344307138450805, 3.47215796952745),
+                  x1 = c(-0.263859503846267,
+                         -0.985160029707486, 0.227262373184513))
+synced_folder = tempfile()
+dir.create(synced_folder)
+model_name = "logistic_example"
+form_file = setup_model(model_name = model_name,
+                        synced_folder = synced_folder,
+                        formula =  y ~ x1 + x2, family =  binomial())
+outfile = estimate_site_gradient(
+  model_name = model_name, synced_folder = synced_folder,
+  all_site_names = "site1",
+  data = data)
+estimate_new_beta(model_name, synced_folder,
+all_site_names = "site1")
+master_beta_file(model_name, synced_folder)
+outfile = estimate_site_gradient(
+  model_name = model_name, synced_folder = synced_folder,
+  all_site_names = "site1",
+  data = data)
+
+estimate_new_beta(model_name, synced_folder,
+all_site_names = "site1", tolerance = 5)
+master_beta_file(model_name, synced_folder)
 }

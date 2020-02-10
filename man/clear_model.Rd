@@ -6,6 +6,7 @@
 \alias{model_output_file}
 \alias{master_beta_file}
 \alias{get_current_beta}
+\alias{get_beta}
 \title{Clear Out Model and Other Helper Functions}
 \usage{
 clear_model(model_name, synced_folder)
@@ -17,12 +18,29 @@ model_output_file(model_name, synced_folder)
 master_beta_file(model_name, synced_folder)
 
 get_current_beta(model_name, synced_folder)
+
+get_beta(model_name, synced_folder, iteration_number)
 }
 \arguments{
 \item{model_name}{name of your model}
 
 \item{synced_folder}{synced folder to do computation}
+
+\item{iteration_number}{number of fitting iteration, used for tracking}
 }
 \description{
 Clear Out Model and Other Helper Functions
+}
+\examples{
+synced_folder = tempfile()
+dir.create(synced_folder)
+model_name = "logistic_example"
+form_file = setup_model(model_name = model_name,
+                        synced_folder = synced_folder,
+                        formula =  y ~ x1 + x2, family =  binomial())
+fnames = folder_names(synced_folder)
+model_output_file(model_name, synced_folder)
+master_beta_file(model_name, synced_folder)
+get_current_beta(model_name, synced_folder)
+clear_model(model_name, synced_folder)
 }

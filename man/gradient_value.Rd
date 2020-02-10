@@ -11,7 +11,8 @@ gradient_value(
   formula,
   family = binomial(),
   iteration_number = 0,
-  shuffle_rows = TRUE
+  shuffle_rows = TRUE,
+  link = NULL
 )
 
 use_glm_gradient_value(
@@ -36,6 +37,8 @@ use_glm_gradient_value(
 
 \item{shuffle_rows}{should the rows of the dataset be permuted, so
 as to decrease privacy concerns}
+
+\item{link}{link function to use with family}
 }
 \value{
 A list of estimated values, including the gradient,
@@ -47,4 +50,24 @@ of the number of beta values
 }
 \description{
 Estimate the update gradient value
+}
+\examples{
+data = data.frame(y = c(0, 0, 1),
+pois_y = c(4, 1, 0),
+x2 = c(-2.19021287072066,
+       -0.344307138450805, 3.47215796952745),
+x1 = c(-0.263859503846267,
+       -0.985160029707486, 0.227262373184513))
+gradient_value(data = data, formula = y ~ x1 + x2,
+family = "binomial")
+gradient_value(data = data, formula = pois_y ~ x1 + x2,
+family = "poisson")
+data = data.frame(y = c(0, 0, 1),
+pois_y = c(4, 1, 0),
+x2 = c(-2.19021287072066,
+       -0.344307138450805, 3.47215796952745),
+x1 = c(-0.263859503846267,
+       -0.985160029707486, 0.227262373184513))
+use_glm_gradient_value(data = data, formula = y ~ x1 + x2,
+family = binomial(link = "probit"))
 }

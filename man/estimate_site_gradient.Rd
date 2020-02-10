@@ -2,6 +2,7 @@
 % Please edit documentation in R/package_contents.R
 \name{estimate_site_gradient}
 \alias{estimate_site_gradient}
+\alias{make_family}
 \title{Estimate Site Gradient}
 \usage{
 estimate_site_gradient(
@@ -9,9 +10,11 @@ estimate_site_gradient(
   synced_folder,
   site_name = "site1",
   data,
-  all_site_names = paste0("site", 1:3),
+  all_site_names = NULL,
   shuffle_rows = TRUE
 )
+
+make_family(family, link = NULL)
 }
 \arguments{
 \item{model_name}{name of your model}
@@ -27,6 +30,8 @@ estimate_site_gradient(
 
 \item{shuffle_rows}{should the rows of the dataset be permuted, so
 as to decrease privacy concerns}
+
+\item{link}{link function to use with family}
 }
 \value{
 A character filename of the gradient file, with the
@@ -34,4 +39,29 @@ output from \code{\link{gradient_value}}
 }
 \description{
 Estimate Site Gradient
+}
+\examples{
+data = data.frame(y = c(0, 0, 1),
+                  pois_y = c(4, 1, 0),
+                  x2 = c(-2.19021287072066,
+                         -0.344307138450805, 3.47215796952745),
+                  x1 = c(-0.263859503846267,
+                         -0.985160029707486, 0.227262373184513))
+tdir = tempfile()
+dir.create(tdir)
+model_name = "logistic_example"
+form_file = setup_model(model_name = model_name,
+                        synced_folder = tdir,
+                        formula =  "y ~ x1 + x2", family =  "binomial")
+outfile = estimate_site_gradient(
+  model_name = model_name, synced_folder = tdir,
+  all_site_names = "site1",
+  data = data)
+clear_model(model_name, tdir)
+testthat::expect_error({
+outfile = estimate_site_gradient(
+  model_name = model_name, synced_folder = tdir,
+  all_site_names = "site1",
+  data = data)
+})
 }

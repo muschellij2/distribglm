@@ -9,7 +9,8 @@ setup_model(
   synced_folder,
   clear_model = TRUE,
   formula = y ~ x1 + x2,
-  family = poisson()
+  family = binomial(),
+  all_site_names = NULL
 )
 }
 \arguments{
@@ -23,10 +24,21 @@ model with same name) before creating new model}
 \item{formula}{model formula to fit, with tilde syntax}
 
 \item{family}{generalized linear model family, see \code{\link{family}}}
+
+\item{all_site_names}{all the site names to fit this model}
 }
 \value{
 A character path to a formula/model file
 }
 \description{
 Setup Model and Formula
+}
+\examples{
+tdir = tempfile()
+dir.create(tdir)
+model_name = "logistic_example"
+form_file = setup_model(model_name = model_name,
+synced_folder = tdir,
+formula =  y ~ x1 + x2, family =  binomial())
+
 }

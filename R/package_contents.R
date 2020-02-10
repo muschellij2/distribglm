@@ -8,6 +8,7 @@
 #' @param iteration_number number of fitting iteration, used for tracking
 #' @param shuffle_rows should the rows of the dataset be permuted, so
 #' as to decrease privacy concerns
+#' @param link link function to use with family
 #'
 #' @return A list of estimated values, including the gradient,
 #' sample size, iteration number, covariance matrix (\code{A_mat}),
@@ -17,13 +18,26 @@
 #' of the number of beta values
 #'
 #' @export
+#' @examples
+#' data = data.frame(y = c(0, 0, 1),
+#' pois_y = c(4, 1, 0),
+#' x2 = c(-2.19021287072066,
+#'        -0.344307138450805, 3.47215796952745),
+#' x1 = c(-0.263859503846267,
+#'        -0.985160029707486, 0.227262373184513))
+#' gradient_value(data = data, formula = y ~ x1 + x2,
+#' family = "binomial")
+#' gradient_value(data = data, formula = pois_y ~ x1 + x2,
+#' family = "poisson")
 gradient_value = function(beta = NULL, data, formula,
                           family = binomial(),
                           iteration_number = 0,
-                          shuffle_rows = TRUE) {
+                          shuffle_rows = TRUE,
+                          link = NULL) {
   if (shuffle_rows) {
     data = data[sample(nrow(data)), ]
   }
+  formula = as.formula(formula)
   y = model.frame(formula, data = data)[,1]
   X = model.matrix(formula, data = data)
   cc = complete.cases(X)
@@ -33,7 +47,10 @@ gradient_value = function(beta = NULL, data, formula,
   if (is.null(beta)) {
     beta = rep(0, ncol(X))
   }
+  family = make_family(family = family, link = link)
+  # print(family)
   linkinv = family$linkinv
+  # print(linkinv)
   variance <- family$variance
   mu.eta <- family$mu.eta
   # dev.resids <- family$dev.resids
@@ -84,25 +101,35 @@ gradient_value = function(beta = NULL, data, formula,
 #' model with same name) before creating new model
 #' @param formula model formula to fit, with tilde syntax
 #' @param family generalized linear model family, see \code{\link{family}}
+#' @param all_site_names all the site names to fit this model
 #'
 #' @return A character path to a formula/model file
 #' @export
+#' @examples
+#' tdir = tempfile()
+#' dir.create(tdir)
+#' model_name = "logistic_example"
+#' form_file = setup_model(model_name = model_name,
+#' synced_folder = tdir,
+#' formula =  y ~ x1 + x2, family =  binomial())
+#'
 setup_model = function(model_name, synced_folder,
                        clear_model = TRUE,
                        formula = y ~ x1 + x2,
-                       family = poisson()) {
+                       family = binomial(),
+                       all_site_names = NULL) {
   # this structure is the same on all sites
   fols = file.path(synced_folder,
                    c("formulas", "gradients", "models",
                      "betas"))
   sapply(fols, dir.create, showWarnings = FALSE)
   model_folder = file.path(synced_folder, "formulas")
-  gradients_folder = file.path(synced_folder, "gradients")
-  beta_folder = file.path(synced_folder, "betas")
-  converged_folder = file.path(synced_folder, "models")
+  # gradients_folder = file.path(synced_folder, "gradients")
+  # beta_folder = file.path(synced_folder, "betas")
+  # converged_folder = file.path(synced_folder, "models")
   formula_file = file.path(model_folder, paste0(model_name, ".rds"))
   if (file.exists(formula_file) & !clear_model) {
-    warning("forumla file already exists and will be overwritten")
+    warning("formula file already exists and will be overwritten")
   }
   # which model are we running
   if (clear_model) {
@@ -110,7 +137,9 @@ setup_model = function(model_name, synced_folder,
   }
 
   L = list(formula = formula,
-           family = family)
+           family = family,
+           model_name = model_name)
+  L$all_site_names = all_site_names
   readr::write_rds(L, formula_file)
   return(formula_file)
 }
@@ -118,6 +147,15 @@ setup_model = function(model_name, synced_folder,
 
 #' @export
 #' @rdname gradient_value
+#' @examples
+#' data = data.frame(y = c(0, 0, 1),
+#' pois_y = c(4, 1, 0),
+#' x2 = c(-2.19021287072066,
+#'        -0.344307138450805, 3.47215796952745),
+#' x1 = c(-0.263859503846267,
+#'        -0.985160029707486, 0.227262373184513))
+#' use_glm_gradient_value(data = data, formula = y ~ x1 + x2,
+#' family = binomial(link = "probit"))
 use_glm_gradient_value = function(
   beta = NULL, data, formula,
   family = binomial(),
@@ -127,6 +165,7 @@ use_glm_gradient_value = function(
   if (shuffle_rows) {
     data = data[sample(nrow(data)), ]
   }
+  formula = as.formula(formula)
   X = model.matrix(formula, data = data)
   # mu.eta <- family$mu.eta
   if (is.null(beta)) {
@@ -194,11 +233,13 @@ aggregate_gradients = function(
     u = x$u
   })
   u = rowSums(u)
-  gradient = solve(A_mat) %*% u
+  covariance = solve(A_mat)
+  gradient = covariance %*% u
   result = list(
     gradient = gradient,
     A_mat = A_mat,
     total_sample_size = n,
+    covariance = covariance,
     dispersion_sum = dispersion_sum,
     iteration_number = iteration_number,
     n_ok = n_ok)
@@ -246,19 +287,41 @@ aggregate_gradients = function(
 #' @return A character filename of the gradient file, with the
 #' output from \code{\link{gradient_value}}
 #' @importFrom readr read_csv read_rds
-#' @importFrom stats family binomial poisson glm coef
+#' @importFrom stats family binomial poisson glm coef as.formula
 #' @importFrom stats model.matrix model.frame complete.cases
 #' @export
-#'
+#' @examples
+#' data = data.frame(y = c(0, 0, 1),
+#'                   pois_y = c(4, 1, 0),
+#'                   x2 = c(-2.19021287072066,
+#'                          -0.344307138450805, 3.47215796952745),
+#'                   x1 = c(-0.263859503846267,
+#'                          -0.985160029707486, 0.227262373184513))
+#' tdir = tempfile()
+#' dir.create(tdir)
+#' model_name = "logistic_example"
+#' form_file = setup_model(model_name = model_name,
+#'                         synced_folder = tdir,
+#'                         formula =  "y ~ x1 + x2", family =  "binomial")
+#' outfile = estimate_site_gradient(
+#'   model_name = model_name, synced_folder = tdir,
+#'   all_site_names = "site1",
+#'   data = data)
+#' clear_model(model_name, tdir)
+#' testthat::expect_error({
+#' outfile = estimate_site_gradient(
+#'   model_name = model_name, synced_folder = tdir,
+#'   all_site_names = "site1",
+#'   data = data)
+#' })
 estimate_site_gradient = function(
   model_name, synced_folder,
   site_name = "site1", data,
-  all_site_names = paste0("site", 1:3),
+  all_site_names = NULL,
   shuffle_rows = TRUE) {
 
 
 
-  site_name = match.arg(site_name, choices = all_site_names)
   file_list = folder_names(synced_folder)
   gradients_folder = file_list$gradients_folder
   model_folder = file_list$model_folder
@@ -274,7 +337,12 @@ estimate_site_gradient = function(
   } else {
     formula_list = readr::read_rds(formula_file)
     formula = formula_list$formula
+    formula = as.formula(formula)
     family = formula_list$family
+    if (is.null(all_site_names)) {
+      all_site_names = formula_list$all_site_names
+    }
+
     if (is.character(family)) {
       family = get(family, envir = .BaseNamespaceEnv)
     }
@@ -285,6 +353,9 @@ estimate_site_gradient = function(
       stop("family specified is not a family object - see setup_model")
     }
   }
+  stopifnot(!is.null(all_site_names))
+  site_name = match.arg(site_name, choices = all_site_names)
+
 
   res = get_current_beta(model_name, synced_folder)
   beta = res$beta
@@ -344,15 +415,43 @@ estimate_site_gradient = function(
 #' @return A filename of the estimated values necessary for
 #' the final estiamtes.
 #' @export
+#' @examples
+#' data = data.frame(y = c(0, 0, 1),
+#'                   pois_y = c(4, 1, 0),
+#'                   x2 = c(-2.19021287072066,
+#'                          -0.344307138450805, 3.47215796952745),
+#'                   x1 = c(-0.263859503846267,
+#'                          -0.985160029707486, 0.227262373184513))
+#' synced_folder = tempfile()
+#' dir.create(synced_folder)
+#' model_name = "logistic_example"
+#' form_file = setup_model(model_name = model_name,
+#'                         synced_folder = synced_folder,
+#'                         formula =  y ~ x1 + x2, family =  binomial())
+#' outfile = estimate_site_gradient(
+#'   model_name = model_name, synced_folder = synced_folder,
+#'   all_site_names = "site1",
+#'   data = data)
+#' estimate_new_beta(model_name, synced_folder,
+#' all_site_names = "site1")
+#' master_beta_file(model_name, synced_folder)
+#' outfile = estimate_site_gradient(
+#'   model_name = model_name, synced_folder = synced_folder,
+#'   all_site_names = "site1",
+#'   data = data)
 #'
+#' estimate_new_beta(model_name, synced_folder,
+#' all_site_names = "site1", tolerance = 5)
+#' master_beta_file(model_name, synced_folder)
 estimate_new_beta = function(
   model_name, synced_folder,
-  all_site_names = paste0("site", 1:3),
+  all_site_names = NULL,
   tolerance = 1e-8) {
 
   file_list = folder_names(synced_folder)
   gradients_folder = file_list$gradients_folder
   beta_folder = file_list$beta_folder
+  model_folder = file_list$model_folder
   converged_folder = file_list$converged_folder
 
 
@@ -382,6 +481,23 @@ estimate_new_beta = function(
   #                    ".rds"),
   #   full.names = TRUE)
 
+  # which model are we running
+  formula_file = file.path(model_folder,
+                           paste0(model_name, ".rds"))
+
+  if (is.null(all_site_names)) {
+    if (!file.exists(formula_file)) {
+      stop(paste0("Formula file: ", formula_file, " doesn't exist!",
+                  " You may need to contact processing site or check your ",
+                  "synced_folder"))
+    } else {
+      formula_list = readr::read_rds(formula_file)
+      all_site_names = formula_list$all_site_names
+    }
+    stopifnot(!is.null(all_site_names))
+  }
+
+
   all_gradient_files = file.path(
     gradients_folder,
     paste0(model_name, "-",
@@ -407,6 +523,7 @@ estimate_new_beta = function(
       dispersion_sum = result$dispersion_sum
       n_ok = result$n_ok
       A_mat = result$A_mat
+      covariance = result$covariance
       tol <- max(dim(A_mat)) * .Machine$double.eps
       q.r = qr(A_mat, tol = tol, LAPACK = FALSE)
       # print(gradient)
@@ -430,6 +547,7 @@ estimate_new_beta = function(
           A_mat = A_mat,
           rank = q.r$rank,
           n_ok = n_ok,
+          covariance = covariance,
           dispersion_sum = dispersion_sum,
           df.residual = n_ok - q.r$rank,
           total_sample_size = total_sample_size,
@@ -448,6 +566,7 @@ estimate_new_beta = function(
         A_mat = A_mat,
         rank = q.r$rank,
         n_ok = n_ok,
+        covariance = covariance,
         dispersion_sum = dispersion_sum,
         df.residual = n_ok - q.r$rank
       )
@@ -475,6 +594,18 @@ estimate_new_beta = function(
 #'
 #' @return NULL
 #' @export
+#' @examples
+#' synced_folder = tempfile()
+#' dir.create(synced_folder)
+#' model_name = "logistic_example"
+#' form_file = setup_model(model_name = model_name,
+#'                         synced_folder = synced_folder,
+#'                         formula =  y ~ x1 + x2, family =  binomial())
+#' fnames = folder_names(synced_folder)
+#' model_output_file(model_name, synced_folder)
+#' master_beta_file(model_name, synced_folder)
+#' get_current_beta(model_name, synced_folder)
+#' clear_model(model_name, synced_folder)
 clear_model = function(
   model_name, synced_folder
 ) {
@@ -559,6 +690,7 @@ get_current_beta = function(model_name, synced_folder) {
 
   if (length(all_beta_files) == 0) {
     beta = NULL
+    rank = n_ok = dispersion_sum = covariance = NULL
     iteration_number = 1
   } else {
     beta_number = sub(".*iteration(.*)[.]rds", "\\1",
@@ -566,16 +698,61 @@ get_current_beta = function(model_name, synced_folder) {
     beta_number = as.numeric(beta_number)
     beta_list = read_rds(all_beta_files[ which.max(beta_number)])
     beta = beta_list$beta
+    rank = beta_list$rank
+    n_ok = beta_list$n_ok
+    dispersion_sum = beta_list$dispersion_sum
+    covariance = beta_list$covariance
     iteration_number = beta_list$iteration_number_next
   }
   L = list(
     iteration_number = iteration_number
   )
   L$beta =  beta
+  L$covariance =  covariance
+  L$rank = rank
+  L$n_ok = n_ok
+  L$dispersion_sum = dispersion_sum
+  L$df.residual = n_ok - rank
   return(L)
+}
+
+#' @rdname clear_model
+#' @param iteration_number number of fitting iteration, used for tracking
+#' @export
+get_beta = function(model_name, synced_folder, iteration_number) {
+  file_list = folder_names(synced_folder)
+  beta_folder = file_list$beta_folder
+
+  out_beta_file = file.path(
+    beta_folder,
+    paste0(
+      model_name,
+      sprintf("-iteration%04.0f", iteration_number),
+      ".rds"))
+  if (!file.exists(out_beta_file)) {
+    stop(paste0("Iteration ", iteration_number,
+                " for model ", model_name, " does not exist"))
+  }
+  beta_list = readr::read_rds(out_beta_file)
+  return(beta_list)
 }
 
 
 
 
-
+#' @rdname estimate_site_gradient
+#' @param link link function to use with family
+#' @export
+make_family = function(family, link = NULL) {
+  if (is.character(family)) {
+    family = get(family, envir = .BaseNamespaceEnv)
+  }
+  if (is.function(family)) {
+    if (is.null(link)) {
+      family = family()
+    } else {
+      family = family(link = link)
+    }
+  }
+  return(family)
+}
