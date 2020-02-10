@@ -459,7 +459,8 @@ estimate_new_beta = function(
                          paste0(model_name, ".rds"))
 
   if (file.exists(final_file)) {
-    stop("Model already converged, delete iterations to run again")
+    warning("Model already converged, delete iterations to run again")
+    return(final_file)
   }
 
 

@@ -16,57 +16,278 @@ library(readr)
 
 # data source is somewhere else! PRIVATE DATA
 
-data_source = "/path/to/data.csv"
-# data_source = paste0(
-#   "~/Dropbox/Projects/",
-#   "distributed_model/data/logistic_data_Michael.csv")
+synced_folder = "~/plumber_models"
+dir.create(synced_folder, recursive = TRUE)
 
-# this may need to be changed if the data isn't CSV
-# data = readr::read_csv(data_source)
-
-#* @apiTitle Calculate gradient
-#* @apiDescription A list of estimated values, including the gradient,
-#* sample size, iteration number, covariance matrix (A_mat),
-#* number of samples with non-zero weights, the sum of the dispersion
-#* values (for overdispersion estimates), and a vector of values
-#* for combining to create the population gradient (u), with length
-#* of the number of beta values
-#*
-#* @param beta current beta value, leave NULL to initialize,
-#@ otherwise a vector of comma-separated values
+#* @apiTitle Setup Model and Formula
+#* @apiDescription A list of the specification and if the
+#* file exists
+#* @param model_name:character name of your model
+#* @param clear_model:bool Should the model be cleared (all files deleted
+#* model with same name) before creating new model
 #* @param formula:character model formula to fit, with tilde syntax
-#* @param family:character generalized linear model family, e.g. "binomial"
-#* @param iteration_number:int number of fitting iteration, used for tracking
-#* @param shuffle_rows:bool should the rows of the dataset be permuted, so
-#* as to decrease privacy concerns
+#* @param family:character generalized linear model family
+#* @param link:character link function for family
 #*
-#* @get /gradient_value
-function(beta = NULL, formula,
+#* @response A list of the specification and if the file exists
+#* @put /setup_model
+function(model_name,
+         clear_model = TRUE,
+         formula = "y ~ x1 + x2",
          family = "binomial",
-         iteration_number = NULL,
-         shuffle_rows = TRUE) {
-  if (!is.null(beta)) {
-    if (is.character(beta)) {
-      beta = strsplit(beta, ",")[[1]]
-    }
-    beta = as.numeric(beta)
-  }
-  formula = as.formula(formula)
-  if (is.character(family)) {
-    family = get(family, envir = .BaseNamespaceEnv)
-  }
-  if (is.function(family)) {
-    family = family()
-  }
-  if (is.null(iteration_number)) {
-    iteration_number = 0
-  }
-  gradient_value(beta = beta,
-                 formula = formula,
-                 data = data,
-                 family = family,
-                 shuffle_rows = shuffle_rows)
+         all_site_names,
+         link = NULL) {
 
+  family = make_family(family = family, link = link)
+  char_formula = formula
+  formula = as.formula(formula)
+  file = setup_model(model_name = model_name,
+                     synced_folder = synced_folder,
+                     clear_model = clear_model,
+                     formula = formula,
+                     family = family,
+                     all_site_names = all_site_names)
+  L = list(
+    formula = char_formula,
+    family = family$family,
+    link = family$link,
+    file = file,
+    file_created = file.exists(file),
+    model_name = model_name,
+    all_site_names = all_site_names
+  )
+  return(L)
+}
+
+#* @apiTitle Get Available Models
+#* @apiDescription A list of the available models
+#*
+#* @response A vector of the model names
+#* @put /available_models
+function() {
+
+  file_list = folder_names(synced_folder)
+  model_folder = file_list$model_folder
+
+  rds = list.files(pattern = ".rds", path = model_folder, full.names = TRUE)
+  if (length(rds) == 0) {
+    model_names = NULL
+  } else {
+    model_names = sapply(rds, function(x) readr::read_rds(x)$model_name)
+  }
+  return(model_names)
 }
 
 
+#* @apiTitle Get Model Specification
+#* @apiDescription A list of the specification and if the
+#* file exists
+#* @param model_name name of your model
+#*
+#* @response A list of the specification and if the file exists
+#* @get /model_specification
+function(model_name) {
+
+  file_list = folder_names(synced_folder)
+  model_folder = file_list$model_folder
+
+  # which model are we running
+  formula_file = file.path(model_folder,
+                           paste0(model_name, ".rds"))
+  if (!file.exists(formula_file)) {
+    stop("Model has not been created!  Run /setup_model")
+  }
+  result = readr::read_rds(formula_file)
+  formula = result$formula
+  all_site_names = result$all_site_names
+  formula = as.character(formula)
+  formula = trimws(formula)
+  formula = formula[ formula != "~"]
+  formula = paste0(formula[1], "~",
+                   paste0(formula[-1], collapse = " + "))
+
+  family = result$family
+  L = list(
+    family = family$family,
+    link = family$link,
+    file = formula_file,
+    all_site_names = all_site_names,
+    file_created = TRUE
+  )
+  return(L)
+}
+
+#* @apiTitle Get Current beta
+#* @apiDescription A vector of beta coefficients
+#* @param model_name:character name of your model
+#* @response A list of beta coefficients and the iteration number
+#* @get /get_current_beta
+function(model_name) {
+  file_list = folder_names(synced_folder)
+  model_folder = file_list$model_folder
+  converged_folder = file_list$converged_folder
+
+  # which model are we running
+  formula_file = file.path(model_folder,
+                           paste0(model_name, ".rds"))
+  if (!file.exists(formula_file)) {
+    stop("Model has not been created!  Run /setup_model")
+  }
+
+  formula_list = readr::read_rds(formula_file)
+  formula = formula_list$formula
+  formula = as.character(formula)
+  formula = trimws(formula)
+  formula = formula[ formula != "~"]
+  formula = paste0(formula[1], " ~ ",
+                   paste0(formula[-1], collapse = " + "))
+
+  family = formula_list$family
+
+  print(formula_list)
+  run = estimate_new_beta(
+    model_name = model_name,
+    synced_folder = synced_folder,
+    all_site_names = formula_list$all_site_names)
+  result = get_current_beta(
+    model_name = model_name,
+    synced_folder = synced_folder)
+  result$formula = formula
+  result$family = family$family
+  result$link = family$link
+  result$file = formula_file
+  result$all_site_names = formula_list$all_site_names
+
+  final_file = file.path(converged_folder,
+                         paste0(model_name, ".rds"))
+  result$converged = file.exists(final_file)
+  result = jsonlite::toJSON(result, digits = 20)
+  return(result)
+}
+
+
+
+
+
+
+#* @apiTitle Submit gradient
+#* @apiDescription Submit A list of estimated values, including the gradient
+#*
+#* @param model_name:character name of your model
+#* @param site_name:character Name of the site
+#* @param A:numeric vector of A, matrix
+#* @param u:numeric u vector
+#* @param n_ok number of samples
+#* @param dispersion_sum sum of the dispersion
+#* @param iteration_number:int number of fitting iteration, used for tracking
+#* @response A message saying the file was created
+#* @put /submit_gradient
+function(A, u, n_ok, site_name,
+         dispersion_sum,
+         model_name,
+         iteration_number) {
+
+  # cat("Stuff")
+  # print(A)
+  # print(u)
+  # print(n_ok)
+  class(A) = "numeric"
+  class(u) = "numeric"
+  gradient_list = list(A_mat = A,
+                       n_ok = n_ok,
+                       u = u,
+                       site_name = site_name,
+                       iteration_number = iteration_number
+  )
+
+  file_list = folder_names(synced_folder)
+  gradients_folder = file_list$gradients_folder
+
+  gradient_file = file.path(
+    gradients_folder,
+    paste0(model_name, "-",
+           site_name,
+           sprintf("-iteration%04.0f", iteration_number),
+           ".rds"))
+  readr::write_rds(gradient_list, gradient_file)
+  return("File was created")
+}
+
+
+
+#* @apiTitle Submit gradient as a list
+#* @apiDescription Submit a list of estimated values, including the gradient
+#*
+#* @param model_name:character name of your model
+#* @param site_name:character Name of the site
+#* @param gradient_list A list of the gradient, from gradient_value function
+#* @param iteration_number:int number of fitting iteration, used for tracking
+#* @response A message saying the file was created
+#* @put /submit_gradient_list
+function(gradient_list, site_name = NULL,
+         model_name = NULL,
+         iteration_number = NULL) {
+  if (is.null(iteration_number)) {
+    iteration_number = gradient_list$iteration_number
+  }
+  if (!is.null(iteration_number) &&
+      !is.null( gradient_list$iteration_number)) {
+    if (gradient_list$iteration_number != iteration_number) {
+      stop(paste0("Gradient list iteration_number and ",
+                  "specified iteration_number not the same, error"))
+    }
+  }
+
+  stopifnot(!is.null(iteration_number))
+  if (is.null(model_name)) {
+    model_name = gradient_list$model_name
+  }
+  stopifnot(!is.null(model_name))
+
+  if (is.null(site_name)) {
+    site_name = gradient_list$site_name
+  }
+  stopifnot(!is.null(site_name))
+
+  file_list = folder_names(synced_folder)
+  gradients_folder = file_list$gradients_folder
+
+  file_list = folder_names(synced_folder)
+  gradients_folder = file_list$gradients_folder
+
+  gradient_file = file.path(
+    gradients_folder,
+    paste0(model_name, "-",
+           site_name,
+           sprintf("-iteration%04.0f", iteration_number),
+           ".rds"))
+  class(gradient_list$A_mat) = "numeric"
+  class(gradient_list$u) = "numeric"
+  class(gradient_list$gradient) = "numeric"
+  readr::write_rds(gradient_list, gradient_file)
+  return(paste0("File ", gradient_file, " was created"))
+}
+
+
+#* @apiTitle Check Model Convergence
+#* @apiDescription Determine whether a model has converged
+#*
+#* @param model_name:character name of your model
+#* @response A message saying the model converged or not and a list of results
+#* @get /model_converged
+function(model_name) {
+  file_list = folder_names(synced_folder)
+  converged_folder = file_list$converged_folder
+
+
+  final_file = file.path(converged_folder,
+                         paste0(model_name, ".rds"))
+  if (file.exists(final_file)) {
+    out = readr::read_rds(final_file)
+    out$converged = TRUE
+  } else {
+    out = list(converged = FALSE)
+  }
+  out = jsonlite::toJSON(out, digits = 20)
+  return(out)
+}
