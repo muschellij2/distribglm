@@ -291,6 +291,7 @@ function(model_name) {
   } else {
     out = list(converged = FALSE)
   }
+  out$model_name = model_name
   out = jsonlite::toJSON(out, digits = 20)
   return(out)
 }

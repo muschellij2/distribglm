@@ -127,6 +127,8 @@ setup_model = function(model_name, synced_folder,
   # gradients_folder = file.path(synced_folder, "gradients")
   # beta_folder = file.path(synced_folder, "betas")
   # converged_folder = file.path(synced_folder, "models")
+  stopifnot(length(model_name) == 1)
+
   formula_file = file.path(model_folder, paste0(model_name, ".rds"))
   if (file.exists(formula_file) & !clear_model) {
     warning("formula file already exists and will be overwritten")
@@ -321,6 +323,7 @@ estimate_site_gradient = function(
   shuffle_rows = TRUE) {
 
 
+  stopifnot(length(model_name) == 1)
 
   file_list = folder_names(synced_folder)
   gradients_folder = file_list$gradients_folder
@@ -447,6 +450,8 @@ estimate_new_beta = function(
   model_name, synced_folder,
   all_site_names = NULL,
   tolerance = 1e-8) {
+
+  stopifnot(length(model_name) == 1)
 
   file_list = folder_names(synced_folder)
   gradients_folder = file_list$gradients_folder
@@ -611,6 +616,7 @@ clear_model = function(
   model_name, synced_folder
 ) {
 
+  stopifnot(length(model_name) == 1)
   file_list = folder_names(synced_folder)
   files = sapply(file_list, function(x) {
     list.files(path = x,
@@ -640,6 +646,7 @@ folder_names = function(synced_folder) {
 model_output_file = function(
   model_name, synced_folder
 ) {
+  stopifnot(length(model_name) == 1)
 
   file_list = folder_names(synced_folder)
   converged_folder = file_list$converged_folder
@@ -651,6 +658,7 @@ model_output_file = function(
 #' @rdname clear_model
 #' @export
 master_beta_file = function(model_name, synced_folder) {
+  stopifnot(length(model_name) == 1)
   file_list = folder_names(synced_folder)
   beta_folder = file_list$beta_folder
 
@@ -682,6 +690,7 @@ master_beta_file = function(model_name, synced_folder) {
 #' @rdname clear_model
 #' @export
 get_current_beta = function(model_name, synced_folder) {
+  stopifnot(length(model_name) == 1)
   file_list = folder_names(synced_folder)
   beta_folder = file_list$beta_folder
   all_beta_files = list.files(
@@ -714,6 +723,7 @@ get_current_beta = function(model_name, synced_folder) {
   L$n_ok = n_ok
   L$dispersion_sum = dispersion_sum
   L$df.residual = n_ok - rank
+  L$model_name = model_name
   return(L)
 }
 
@@ -721,6 +731,8 @@ get_current_beta = function(model_name, synced_folder) {
 #' @param iteration_number number of fitting iteration, used for tracking
 #' @export
 get_beta = function(model_name, synced_folder, iteration_number) {
+  stopifnot(length(model_name) == 1)
+
   file_list = folder_names(synced_folder)
   beta_folder = file_list$beta_folder
 
