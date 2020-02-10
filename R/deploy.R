@@ -1,3 +1,10 @@
+install_github_r_package = function(droplet, repo) {
+  analogsea::droplet_ssh(
+    droplet,
+    sprintf("Rscript -e \"remotes::install_github('%s')\"",
+            repo))
+}
+
 deploy_check = function() {
   if (!requireNamespace("analogsea", quietly = TRUE) ||
       !requireNamespace("plumber", quietly = TRUE)) {
@@ -74,13 +81,6 @@ do_provision_glm_api = function(
   analogsea::install_r_package(droplet, c("httr", "jsonlite"))
 
 
-  install_github_r_package = function(droplet, repo) {
-    analogsea::droplet_ssh(
-      droplet,
-      sprintf("Rscript -e \"remotes::install_github('%s')\"",
-              repo))
-  }
-
   droplet_ls = function(droplet, path) {
     analogsea::droplet_ssh(
       droplet,
@@ -133,6 +133,8 @@ do_deploy_glm_api_only = function(
   swagger = TRUE,
   forward = TRUE) {
   deploy_check()
+
+  install_github_r_package(droplet, "muschellij2/distribglm")
 
   local_file = system.file("extdata/plumber.R",
                            package = "distribglm")

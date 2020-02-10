@@ -64,7 +64,8 @@ api_submit_gradient = function(
 
   api_dep_check()
 
-  beta = api_model_specification(url, model_name)
+  # beta = api_model_specification(url, model_name)
+  beta = api_get_current_beta(url, model_name)
 
   family = make_family(beta$family, link = beta$link)
   body = list(site_name = site_name,
