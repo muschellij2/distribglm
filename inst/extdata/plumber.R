@@ -103,7 +103,7 @@ function(model_name) {
   formula = as.character(formula)
   formula = trimws(formula)
   formula = formula[ formula != "~"]
-  formula = paste0(formula[1], "~",
+  formula = paste0(formula[1], " ~ ",
                    paste0(formula[-1], collapse = " + "))
 
   family = result$family
@@ -111,6 +111,7 @@ function(model_name) {
     family = family$family,
     link = family$link,
     file = formula_file,
+    formula = formula,
     all_site_names = all_site_names,
     file_created = TRUE
   )

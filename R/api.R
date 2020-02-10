@@ -122,6 +122,16 @@ api_setup_model = function(url, model_name,
                            family = "binomial",
                            link = "logit",
                            all_site_names) {
+  if (inherits(formula, "formula")) {
+    formula = as.character(formula)
+    formula = trimws(formula)
+    formula = formula[ formula != "~"]
+    formula = paste0(formula[1], "~",
+                     paste0(formula[-1], collapse = " + "))
+  }
+  family = make_family(family, link = link)
+  link = family$link
+  family = family$family
   api_dep_check()
   res = httr::PUT(paste0(url, "/setup_model"),
                   body = list(
