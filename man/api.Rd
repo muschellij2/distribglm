@@ -7,6 +7,7 @@
 \alias{api_submit_gradient}
 \alias{api_model_converged}
 \alias{api_setup_model}
+\alias{api_clear_model}
 \title{API Functions and wrappers}
 \usage{
 api_available_models(url)
@@ -35,6 +36,8 @@ api_setup_model(
   link = "logit",
   all_site_names
 )
+
+api_clear_model(url, model_name)
 }
 \arguments{
 \item{url}{URL to the Plumber Server}

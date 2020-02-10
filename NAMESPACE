@@ -2,6 +2,7 @@
 
 export(aggregate_gradients)
 export(api_available_models)
+export(api_clear_model)
 export(api_get_current_beta)
 export(api_model_converged)
 export(api_model_specification)

@@ -173,3 +173,16 @@ api_setup_model = function(url, model_name,
   model_setup = jsonlite::fromJSON(httr::content(res, as = "text"))
   model_setup
 }
+
+#' @rdname api
+#' @export
+api_clear_model = function(url, model_name) {
+  api_dep_check()
+  stopifnot(length(model_name) == 1)
+  res = httr::PUT(paste0(url, "/clear_model"),
+                  body = list(
+                    model_name = model_name),
+                  encode = "json")
+  model_setup = jsonlite::fromJSON(httr::content(res, as = "text"))
+  model_setup
+}
