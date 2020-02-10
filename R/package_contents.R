@@ -741,7 +741,7 @@ get_beta = function(model_name, synced_folder, iteration_number) {
 
 
 
-#' @rdname estimate_site_gradient
+#' @rdname setup_model
 #' @param link link function to use with family
 #' @export
 make_family = function(family, link = NULL) {

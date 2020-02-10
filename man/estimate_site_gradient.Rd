@@ -2,7 +2,6 @@
 % Please edit documentation in R/package_contents.R
 \name{estimate_site_gradient}
 \alias{estimate_site_gradient}
-\alias{make_family}
 \title{Estimate Site Gradient}
 \usage{
 estimate_site_gradient(
@@ -13,8 +12,6 @@ estimate_site_gradient(
   all_site_names = NULL,
   shuffle_rows = TRUE
 )
-
-make_family(family, link = NULL)
 }
 \arguments{
 \item{model_name}{name of your model}
@@ -30,8 +27,6 @@ make_family(family, link = NULL)
 
 \item{shuffle_rows}{should the rows of the dataset be permuted, so
 as to decrease privacy concerns}
-
-\item{link}{link function to use with family}
 }
 \value{
 A character filename of the gradient file, with the

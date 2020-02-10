@@ -59,11 +59,26 @@ function(model_name,
   return(L)
 }
 
+#* @apiTitle Clear Model
+#* @apiDescription Clears out a model
+#* @param model_name:character name of your model
+#*
+#* @response Indication if models cleared
+#* @put /clear_model
+function(model_name) {
+
+  stopifnot(length(model_name) == 1)
+  clear_model(model_name = model_name,
+                     synced_folder = synced_folder)
+  msg = paste0("Model ", model_name, " has been cleared")
+  return(msg)
+}
+
 #* @apiTitle Get Available Models
 #* @apiDescription A list of the available models
 #*
 #* @response A vector of the model names
-#* @put /available_models
+#* @get /available_models
 function() {
 
   file_list = folder_names(synced_folder)

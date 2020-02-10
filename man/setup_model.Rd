@@ -2,6 +2,7 @@
 % Please edit documentation in R/package_contents.R
 \name{setup_model}
 \alias{setup_model}
+\alias{make_family}
 \title{Setup Model and Formula}
 \usage{
 setup_model(
@@ -12,6 +13,8 @@ setup_model(
   family = binomial(),
   all_site_names = NULL
 )
+
+make_family(family, link = NULL)
 }
 \arguments{
 \item{model_name}{name of your model}
@@ -26,6 +29,8 @@ model with same name) before creating new model}
 \item{family}{generalized linear model family, see \code{\link{family}}}
 
 \item{all_site_names}{all the site names to fit this model}
+
+\item{link}{link function to use with family}
 }
 \value{
 A character path to a formula/model file

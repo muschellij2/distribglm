@@ -7,8 +7,20 @@ api_dep_check = function() {
 
 #' @rdname api
 #' @export
+api_available_models = function(url) {
+  b = httr::GET(paste0(url, "/available_models"))
+  beta = jsonlite::fromJSON(httr::content(b, as = "text"))
+  return(beta)
+}
+
+#' @rdname api
+#' @export
 api_get_current_beta = function(url, model_name) {
   api_dep_check()
+  if (missing(model_name)) {
+    model_name = api_available_models(url = url)
+  }
+  stopifnot(length(model_name) == 1)
   b = httr::GET(paste0(url, "/get_current_beta"),
                 query = list(
                   model_name = model_name))
@@ -23,6 +35,10 @@ api_get_current_beta = function(url, model_name) {
 #' @export
 api_model_specification = function(url, model_name) {
   api_dep_check()
+  if (missing(model_name)) {
+    model_name = api_available_models(url = url)
+  }
+  stopifnot(length(model_name) == 1)
   # check at the compute or data site
   mod_spec = httr::GET(paste0(url, "/model_specification"),
                        query = list(
@@ -63,6 +79,10 @@ api_submit_gradient = function(
   dry_run = FALSE) {
 
   api_dep_check()
+  if (missing(model_name)) {
+    model_name = api_available_models(url = url)
+  }
+  stopifnot(length(model_name) == 1)
 
   # beta = api_model_specification(url, model_name)
   beta = api_get_current_beta(url, model_name)
@@ -106,6 +126,10 @@ api_submit_gradient = function(
 #' @export
 api_model_converged = function(url, model_name) {
   api_dep_check()
+  if (missing(model_name)) {
+    model_name = api_available_models(url = url)
+  }
+  stopifnot(length(model_name) == 1)
   b = httr::GET(paste0(url, "/model_converged"),
                 query = list(
                   model_name = model_name))
@@ -123,6 +147,7 @@ api_setup_model = function(url, model_name,
                            family = "binomial",
                            link = "logit",
                            all_site_names) {
+  api_dep_check()
   if (inherits(formula, "formula")) {
     formula = as.character(formula)
     formula = trimws(formula)
@@ -133,7 +158,10 @@ api_setup_model = function(url, model_name,
   family = make_family(family, link = link)
   link = family$link
   family = family$family
-  api_dep_check()
+  if (missing(model_name)) {
+    model_name = api_available_models(url = url)
+  }
+  stopifnot(length(model_name) == 1)
   res = httr::PUT(paste0(url, "/setup_model"),
                   body = list(
                     model_name = model_name,
