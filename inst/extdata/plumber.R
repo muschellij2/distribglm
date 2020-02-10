@@ -1,15 +1,3 @@
-#
-# This is a Plumber API. In RStudio 1.2 or newer you can run the API by
-# clicking the 'Run API' button above.
-#
-# In RStudio 1.1 or older, see the Plumber documentation for details
-# on running the API.
-#
-# Find out more about building APIs with Plumber here:
-#
-#    https://www.rplumber.io/
-#
-
 library(plumber)
 library(distribglm)
 library(readr)
@@ -19,12 +7,13 @@ library(readr)
 synced_folder = "~/plumber_models"
 dir.create(synced_folder, recursive = TRUE)
 
-#* @apiTitle Setup Model and Formula
-#* @apiDescription A list of the specification and if the
-#* file exists
+#* @apiTitle Run Distributed GLM
+#* @apiDescription Allows for the running of distributed generalized Linear models
+
+#* Setup Model and Formula
+#*
 #* @param model_name:character name of your model
-#* @param clear_model:bool Should the model be cleared (all files deleted
-#* model with same name) before creating new model
+#* @param clear_model:bool Should the model be cleared (all files deleted model with same name) before creating new model
 #* @param formula:character model formula to fit, with tilde syntax
 #* @param family:character generalized linear model family
 #* @param link:character link function for family
@@ -59,8 +48,7 @@ function(model_name,
   return(L)
 }
 
-#* @apiTitle Clear Model
-#* @apiDescription Clears out a model
+#* Clears out a model
 #* @param model_name:character name of your model
 #*
 #* @response Indication if models cleared
@@ -74,8 +62,7 @@ function(model_name) {
   return(msg)
 }
 
-#* @apiTitle Get Available Models
-#* @apiDescription A list of the available models
+#* Get Available Models
 #*
 #* @response A vector of the model names
 #* @get /available_models
@@ -98,9 +85,8 @@ function() {
 }
 
 
-#* @apiTitle Get Model Specification
-#* @apiDescription A list of the specification and if the
-#* file exists
+#* Get Model Specification
+#*
 #* @param model_name name of your model
 #*
 #* @response A list of the specification and if the file exists
@@ -137,8 +123,8 @@ function(model_name) {
   return(L)
 }
 
-#* @apiTitle Get Current beta
-#* @apiDescription A vector of beta coefficients
+#* Get Current beta
+#*
 #* @param model_name:character name of your model
 #* @response A list of beta coefficients and the iteration number
 #* @get /get_current_beta
@@ -190,8 +176,7 @@ function(model_name) {
 
 
 
-#* @apiTitle Submit gradient
-#* @apiDescription Submit A list of estimated values, including the gradient
+#* Submit a set of estimated values, including the gradient
 #*
 #* @param model_name:character name of your model
 #* @param site_name:character Name of the site
@@ -235,8 +220,7 @@ function(A, u, n_ok, site_name,
 
 
 
-#* @apiTitle Submit gradient as a list
-#* @apiDescription Submit a list of estimated values, including the gradient
+#* Submit a list of estimated values, including the gradient
 #*
 #* @param model_name:character name of your model
 #* @param site_name:character Name of the site
@@ -289,8 +273,7 @@ function(gradient_list, site_name = NULL,
 }
 
 
-#* @apiTitle Check Model Convergence
-#* @apiDescription Determine whether a model has converged
+#* Check Model Convergence
 #*
 #* @param model_name:character name of your model
 #* @response A message saying the model converged or not and a list of results
