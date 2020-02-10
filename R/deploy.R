@@ -104,6 +104,11 @@ do_remove_glm_api = function(
 
 
   deploy_check()
+  analogsea::droplet_ssh(
+    droplet,
+    paste("rm -rf",
+          paste0("/var/plumber/", application_name)))
+
   app_name = paste0("plumber-", application_name)
   analogsea::droplet_ssh(
     droplet,
@@ -112,10 +117,7 @@ do_remove_glm_api = function(
     droplet,
     sprintf("(systemctl disable %s || true) && sleep 1", app_name))
 
-  analogsea::droplet_ssh(
-    droplet,
-    paste("rm -rf",
-          paste0("/var/plumber/", app_name)))
+
   analogsea::droplet_ssh(
     droplet,
     paste("rm -rf",
@@ -125,7 +127,7 @@ do_remove_glm_api = function(
     droplet,
     paste("rm -rf",
           paste0("/etc/nginx/sites-available/plumber-apis/",
-                 app_name, ".conf")))
+                 application_name, ".conf")))
   analogsea::droplet_ssh(droplet, "systemctl reload nginx")
   return(droplet)
 }
