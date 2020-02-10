@@ -79,16 +79,20 @@ function(model_name) {
 #*
 #* @response A vector of the model names
 #* @get /available_models
+#* @put /available_models
 function() {
 
   file_list = folder_names(synced_folder)
   model_folder = file_list$model_folder
 
-  rds = list.files(pattern = ".rds", path = model_folder, full.names = TRUE)
+  rds = list.files(pattern = ".rds",
+                   path = model_folder,
+                   full.names = TRUE)
   if (length(rds) == 0) {
     model_names = NULL
   } else {
-    model_names = sapply(rds, function(x) readr::read_rds(x)$model_name)
+    model_names = sapply(rds, function(x)
+      readr::read_rds(x)$model_name)
   }
   return(model_names)
 }

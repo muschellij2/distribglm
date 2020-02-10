@@ -2,6 +2,7 @@
 % Please edit documentation in R/deploy.R
 \name{do_provision_glm_api}
 \alias{do_provision_glm_api}
+\alias{do_remove_glm_api}
 \alias{do_deploy_glm_api}
 \alias{do_deploy_glm_api_only}
 \alias{do_list_plumber}
@@ -13,6 +14,8 @@ do_provision_glm_api(
   port = 8000,
   example = FALSE
 )
+
+do_remove_glm_api(droplet, application_name = "glm")
 
 do_deploy_glm_api(
   ...,
@@ -45,6 +48,8 @@ argument of \code{do_deploy_api} function from \code{plumber} package}
 \item{example}{If TRUE, will deploy an example API
 named hello to the server on port 8000.}
 
+\item{droplet}{droplet to deploy on}
+
 \item{swagger}{enable the Swagger interface,
 passed to \code{do_deploy_api} function from
 \code{plumber} package}
@@ -53,8 +58,6 @@ passed to \code{do_deploy_api} function from
 server to point to this application,
 passed to \code{do_deploy_api} function from
 \code{plumber} package}
-
-\item{droplet}{droplet to deploy on}
 }
 \value{
 A droplet instance

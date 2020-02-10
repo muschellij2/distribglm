@@ -94,6 +94,43 @@ do_provision_glm_api = function(
   droplet
 }
 
+#' @export
+#' @rdname deploy
+do_remove_glm_api = function(
+  droplet,
+  application_name = "glm") {
+
+  deploy_check()
+
+
+  deploy_check()
+  app_name = paste0("plumber-", application_name)
+  analogsea::droplet_ssh(
+    droplet,
+    sprintf("(systemctl stop %s || true) && sleep 1", app_name))
+  analogsea::droplet_ssh(
+    droplet,
+    sprintf("(systemctl disable %s || true) && sleep 1", app_name))
+
+  analogsea::droplet_ssh(
+    droplet,
+    paste("rm -rf",
+          paste0("/var/plumber/", app_name)))
+  analogsea::droplet_ssh(
+    droplet,
+    paste("rm -rf",
+          paste0("/etc/systemd/system/",
+                 app_name, ".service")))
+  analogsea::droplet_ssh(
+    droplet,
+    paste("rm -rf",
+          paste0("/etc/nginx/sites-available/plumber-apis/",
+                 app_name, ".conf")))
+  analogsea::droplet_ssh(droplet, "systemctl reload nginx")
+  return(droplet)
+}
+
+
 
 #' @param droplet droplet to deploy on
 #' @export
