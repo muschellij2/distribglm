@@ -8,6 +8,7 @@
 \alias{api_model_converged}
 \alias{api_setup_model}
 \alias{api_clear_model}
+\alias{api_estimate_model}
 \title{API Functions and wrappers}
 \usage{
 api_available_models(url)
@@ -38,6 +39,8 @@ api_setup_model(
 )
 
 api_clear_model(url, model_name)
+
+api_estimate_model(url, model_name, data, site_name, wait_time = 1, ...)
 }
 \arguments{
 \item{url}{URL to the Plumber Server}
@@ -66,6 +69,12 @@ is submitted to the server, but returned to see what would be submitted.}
 \item{link}{link function to use with family}
 
 \item{all_site_names}{all the site names to fit this model}
+
+\item{wait_time}{Time, in seconds, to wait until to try to
+get new estimate}
+
+\item{...}{addition alarguments to send to
+\code{\link{api_submit_gradient}}}
 }
 \description{
 API Functions and wrappers

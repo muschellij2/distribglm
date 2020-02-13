@@ -167,6 +167,7 @@ function(model_name) {
   final_file = file.path(converged_folder,
                          paste0(model_name, ".rds"))
   result$converged = file.exists(final_file)
+  result$all_site_names = formula_list$all_site_names
   result = jsonlite::toJSON(result, digits = 20)
   return(result)
 }

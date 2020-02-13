@@ -83,6 +83,7 @@ api_submit_gradient = function(
     model_name = api_available_models(url = url)
   }
   stopifnot(length(model_name) == 1)
+  stopifnot(length(site_name) == 1)
 
   # beta = api_model_specification(url, model_name)
   beta = api_get_current_beta(url, model_name)
@@ -90,6 +91,21 @@ api_submit_gradient = function(
   family = make_family(beta$family, link = beta$link)
   body = list(site_name = site_name,
               model_name = model_name)
+  mod_spec = api_model_specification(
+    url = url,
+    model_name = model_name)
+  if (!is.null(mod_spec$all_site_names)) {
+    if (!site_name %in% mod_spec$all_site_names) {
+      stop(paste0(
+        "Site Name ", site_name, " not one of the site names",
+        " specified for model ", model_name, ", which are ",
+        paste(mod_spec$all_site_names, collapse = "," ),
+        ". Please ask those",
+        " who set up the model")
+      )
+    }
+  }
+  site_name = match.arg(site_name, choices = mod_spec$all_site_names)
   grad = gradient_value(beta = beta$beta,
                         data = data,
                         formula = beta$formula,
@@ -185,4 +201,34 @@ api_clear_model = function(url, model_name) {
                   encode = "json")
   model_setup = jsonlite::fromJSON(httr::content(res, as = "text"))
   model_setup
+}
+
+#' @rdname api
+#' @param wait_time Time, in seconds, to wait until to try to
+#' get new estimate
+#' @param ... addition alarguments to send to
+#' \code{\link{api_submit_gradient}}
+#' @export
+api_estimate_model = function(
+  url, model_name,
+  data,
+  site_name,
+  wait_time = 1,
+  ...) {
+  beta = list(converged = FALSE)
+  while (!beta$converged) {
+    # run at either site
+    beta = api_get_current_beta(url, model_name = model_name)
+    print(beta)
+
+    api_submit_gradient(
+      url = url,
+      model_name = model_name,
+      data = data,
+      site_name = site_name,
+      ...)
+    Sys.sleep(wait_time)
+  }
+  out = api_model_converged(url, model_name)
+  return(out)
 }
