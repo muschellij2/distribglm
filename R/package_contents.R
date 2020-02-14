@@ -241,7 +241,7 @@ aggregate_gradients = function(
     gradient = gradient,
     A_mat = A_mat,
     total_sample_size = n,
-    covariance = covariance,
+    covariance_unscaled = covariance,
     dispersion_sum = dispersion_sum,
     iteration_number = iteration_number,
     n_ok = n_ok)
@@ -529,9 +529,17 @@ estimate_new_beta = function(
       dispersion_sum = result$dispersion_sum
       n_ok = result$n_ok
       A_mat = result$A_mat
-      covariance = result$covariance
+      covariance_unscaled = result$covariance_unscaled
       tol <- max(dim(A_mat)) * .Machine$double.eps
       q.r = qr(A_mat, tol = tol, LAPACK = FALSE)
+
+      object = formula_list
+      if (object$family$family %in% c("poisson", "binomial")) {
+        dispersion = 1
+      } else {
+        dispersion = dispersion_sum/n_ok - q.r$rank
+      }
+      covariance = dispersion * covariance_unscaled
       # print(gradient)
 
       if (is.null(beta)) {
@@ -554,6 +562,7 @@ estimate_new_beta = function(
           rank = q.r$rank,
           n_ok = n_ok,
           covariance = covariance,
+          covariance_unscaled = covariance_unscaled,
           dispersion_sum = dispersion_sum,
           df.residual = n_ok - q.r$rank,
           total_sample_size = total_sample_size,
@@ -573,6 +582,7 @@ estimate_new_beta = function(
         rank = q.r$rank,
         n_ok = n_ok,
         covariance = covariance,
+        covariance_unscaled = covariance_unscaled,
         dispersion_sum = dispersion_sum,
         df.residual = n_ok - q.r$rank
       )
@@ -700,7 +710,7 @@ get_current_beta = function(model_name, synced_folder) {
 
   if (length(all_beta_files) == 0) {
     beta = NULL
-    rank = n_ok = dispersion_sum = covariance = NULL
+    rank = n_ok = dispersion_sum = covariance_unscaled = covariance = NULL
     iteration_number = 1
   } else {
     beta_number = sub(".*iteration(.*)[.]rds", "\\1",
@@ -712,6 +722,7 @@ get_current_beta = function(model_name, synced_folder) {
     n_ok = beta_list$n_ok
     dispersion_sum = beta_list$dispersion_sum
     covariance = beta_list$covariance
+    covariance_unscaled = beta_list$covariance_unscaled
     iteration_number = beta_list$iteration_number_next
   }
   L = list(
@@ -719,6 +730,7 @@ get_current_beta = function(model_name, synced_folder) {
   )
   L$beta =  beta
   L$covariance =  covariance
+  L$covariance_unscaled =  covariance_unscaled
   L$rank = rank
   L$n_ok = n_ok
   L$dispersion_sum = dispersion_sum
