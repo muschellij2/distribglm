@@ -11,7 +11,8 @@ setup_model(
   clear_model = TRUE,
   formula = y ~ x1 + x2,
   family = binomial(),
-  all_site_names = NULL
+  all_site_names = NULL,
+  link = NULL
 )
 
 make_family(family, link = NULL)

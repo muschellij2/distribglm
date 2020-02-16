@@ -102,6 +102,8 @@ gradient_value = function(beta = NULL, data, formula,
 #' @param formula model formula to fit, with tilde syntax
 #' @param family generalized linear model family, see \code{\link{family}}
 #' @param all_site_names all the site names to fit this model
+#' @param link link function to use with family
+#'
 #'
 #' @return A character path to a formula/model file
 #' @export
@@ -117,7 +119,8 @@ setup_model = function(model_name, synced_folder,
                        clear_model = TRUE,
                        formula = y ~ x1 + x2,
                        family = binomial(),
-                       all_site_names = NULL) {
+                       all_site_names = NULL,
+                       link = NULL) {
   # this structure is the same on all sites
   fols = file.path(synced_folder,
                    c("formulas", "gradients", "models",
@@ -128,6 +131,8 @@ setup_model = function(model_name, synced_folder,
   # beta_folder = file.path(synced_folder, "betas")
   # converged_folder = file.path(synced_folder, "models")
   stopifnot(length(model_name) == 1)
+
+  family = make_family(family = family, link = link)
 
   formula_file = file.path(model_folder, paste0(model_name, ".rds"))
   if (file.exists(formula_file) & !clear_model) {
@@ -490,6 +495,7 @@ estimate_new_beta = function(
   # which model are we running
   formula_file = file.path(model_folder,
                            paste0(model_name, ".rds"))
+  formula_list = readr::read_rds(formula_file)
 
   if (is.null(all_site_names)) {
     if (!file.exists(formula_file)) {
@@ -497,7 +503,6 @@ estimate_new_beta = function(
                   " You may need to contact processing site or check your ",
                   "synced_folder"))
     } else {
-      formula_list = readr::read_rds(formula_file)
       all_site_names = formula_list$all_site_names
     }
     stopifnot(!is.null(all_site_names))
@@ -537,7 +542,7 @@ estimate_new_beta = function(
       if (object$family$family %in% c("poisson", "binomial")) {
         dispersion = 1
       } else {
-        dispersion = dispersion_sum/n_ok - q.r$rank
+        dispersion = dispersion_sum/(n_ok - q.r$rank)
       }
       covariance = dispersion * covariance_unscaled
       # print(gradient)
@@ -553,6 +558,7 @@ estimate_new_beta = function(
       if (epsilon < tolerance) {
         print("Model has converged!")
         final_beta_list = list(
+          setup = formula_list,
           beta = beta,
           num_iterations = iteration_number,
           gradient = gradient,
@@ -572,6 +578,7 @@ estimate_new_beta = function(
       }
       beta = beta + gradient
       beta_list = list(
+        setup = formula_list,
         beta = beta,
         previous_gradient = gradient,
         total_sample_size = total_sample_size,
