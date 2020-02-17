@@ -788,3 +788,31 @@ make_family = function(family, link = NULL) {
   }
   return(family)
 }
+
+#' @rdname clear_model
+#' @param wait_time Time, in seconds, to wait until to try to
+#' get new estimate
+#' @export
+estimate_model = function(
+  model_name, synced_folder,
+  site_name = "site1",
+  data,
+  all_site_names = NULL,
+  shuffle_rows = TRUE,
+  wait_time = 1) {
+
+  final_file = model_output_file(model_name, synced_folder)
+
+  while (!file.exists(final_file)) {
+    gradient_file = estimate_site_gradient(
+      model_name = model_name,
+      synced_folder = synced_folder,
+      site_name = site_name,
+      data = data,
+      all_site_names = all_site_names,
+      shuffle_rows = shuffle_rows)
+    Sys.sleep(wait_time)
+  }
+  out = readr::read_rds(final_file)
+  return(out)
+}

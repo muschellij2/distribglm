@@ -7,6 +7,7 @@
 \alias{master_beta_file}
 \alias{get_current_beta}
 \alias{get_beta}
+\alias{estimate_model}
 \title{Clear Out Model and Other Helper Functions}
 \usage{
 clear_model(model_name, synced_folder)
@@ -20,6 +21,16 @@ master_beta_file(model_name, synced_folder)
 get_current_beta(model_name, synced_folder)
 
 get_beta(model_name, synced_folder, iteration_number)
+
+estimate_model(
+  model_name,
+  synced_folder,
+  site_name = "site1",
+  data,
+  all_site_names = NULL,
+  shuffle_rows = TRUE,
+  wait_time = 1
+)
 }
 \arguments{
 \item{model_name}{name of your model}
@@ -27,6 +38,9 @@ get_beta(model_name, synced_folder, iteration_number)
 \item{synced_folder}{synced folder to do computation}
 
 \item{iteration_number}{number of fitting iteration, used for tracking}
+
+\item{wait_time}{Time, in seconds, to wait until to try to
+get new estimate}
 }
 \description{
 Clear Out Model and Other Helper Functions
