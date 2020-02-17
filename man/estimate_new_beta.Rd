@@ -2,6 +2,7 @@
 % Please edit documentation in R/package_contents.R
 \name{estimate_new_beta}
 \alias{estimate_new_beta}
+\alias{compute_model}
 \title{Estimate the updated beta value}
 \usage{
 estimate_new_beta(
@@ -9,6 +10,14 @@ estimate_new_beta(
   synced_folder,
   all_site_names = NULL,
   tolerance = 1e-08
+)
+
+compute_model(
+  model_name,
+  synced_folder,
+  all_site_names = NULL,
+  tolerance = 1e-08,
+  wait_time = 5
 )
 }
 \arguments{
@@ -19,6 +28,9 @@ estimate_new_beta(
 \item{all_site_names}{all the site names used to fit this model}
 
 \item{tolerance}{tolerance for convergence}
+
+\item{wait_time}{Time, in seconds, to wait until to try to
+get new estimate}
 }
 \value{
 A filename of the estimated values necessary for

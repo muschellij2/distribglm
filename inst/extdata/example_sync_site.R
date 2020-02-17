@@ -31,20 +31,15 @@ if (!requireNamespace("distribglm", quietly = TRUE)) {
 }
 library(distribglm)
 
-
-
 final_file = model_output_file(model_name, synced_folder)
+result = estimate_model(
+  model_name = model_name,
+  synced_folder = synced_folder,
+  data = data,
+  site_name = site_name,
+  data = data,
+  wait_time = 1)
 
-while (!file.exists(final_file)) {
-  gradient_file = estimate_site_gradient(
-    model_name,
-    synced_folder,
-    site_name = site_name,
-    data = data)
-  Sys.sleep(1)
-}
-
-result = readr::read_rds(final_file)
 
 site_mod = glm(result$setup$formula, data = data,
                family = result$setup$family)

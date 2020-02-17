@@ -789,7 +789,7 @@ make_family = function(family, link = NULL) {
   return(family)
 }
 
-#' @rdname clear_model
+#' @rdname estimate_site_gradient
 #' @param wait_time Time, in seconds, to wait until to try to
 #' get new estimate
 #' @export
@@ -815,4 +815,28 @@ estimate_model = function(
   }
   out = readr::read_rds(final_file)
   return(out)
+}
+
+#' @rdname estimate_new_beta
+#' @param wait_time Time, in seconds, to wait until to try to
+#' get new estimate
+#' @export
+compute_model = function(
+  model_name, synced_folder,
+  all_site_names = NULL,
+  tolerance = 1e-8,
+  wait_time = 5
+) {
+  final_file = model_output_file(model_name, synced_folder)
+
+  while (!file.exists(final_file)) {
+    run = estimate_new_beta(
+      model_name,
+      synced_folder,
+      all_site_names = all_site_names,
+      tolerance = tolerance)
+    Sys.sleep(wait_time)
+  }
+  result = readr::read_rds(final_file)
+  return(result)
 }

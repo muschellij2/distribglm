@@ -2,6 +2,7 @@
 % Please edit documentation in R/package_contents.R
 \name{estimate_site_gradient}
 \alias{estimate_site_gradient}
+\alias{estimate_model}
 \title{Estimate Site Gradient}
 \usage{
 estimate_site_gradient(
@@ -11,6 +12,16 @@ estimate_site_gradient(
   data,
   all_site_names = NULL,
   shuffle_rows = TRUE
+)
+
+estimate_model(
+  model_name,
+  synced_folder,
+  site_name = "site1",
+  data,
+  all_site_names = NULL,
+  shuffle_rows = TRUE,
+  wait_time = 1
 )
 }
 \arguments{
@@ -27,6 +38,9 @@ estimate_site_gradient(
 
 \item{shuffle_rows}{should the rows of the dataset be permuted, so
 as to decrease privacy concerns}
+
+\item{wait_time}{Time, in seconds, to wait until to try to
+get new estimate}
 }
 \value{
 A character filename of the gradient file, with the
