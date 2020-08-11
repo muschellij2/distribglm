@@ -1,8 +1,10 @@
 install_github_r_package = function(droplet, repo) {
-  analogsea::droplet_ssh(
-    droplet,
-    sprintf("Rscript -e \"remotes::install_github('%s')\"",
-            repo))
+  for (irepo in repo) {
+    analogsea::droplet_ssh(
+      droplet,
+      sprintf("Rscript -e \"remotes::install_github('%s')\"",
+              repo))
+  }
 }
 
 deploy_check = function() {
@@ -49,6 +51,11 @@ droplet_capture = function(droplet, command) {
 #' \code{plumber} package
 #' @param example If TRUE, will deploy an example API
 #' named hello to the server on port 8000.
+#' @param r_packages Additional R packages to install, using
+#' \code{install.packages}
+#' @param github_r_packages Additional R packages to install from GitHub, using
+#' \code{remotes::install_github}
+#'
 #'
 #' @return A droplet instance
 #' @rdname deploy
@@ -57,7 +64,9 @@ do_provision_glm_api = function(
   ...,
   application_name = "glm",
   port = 8000,
-  example = FALSE) {
+  example = FALSE,
+  r_packages = NULL,
+  github_r_packages = NULL) {
 
   deploy_check()
   if (example && port == 8000) {
@@ -78,7 +87,9 @@ do_provision_glm_api = function(
   }
   droplet_apt_install(droplet, "libcurl4-openssl-dev")
   droplet_apt_install(droplet, "libssl-dev", update = FALSE)
-  analogsea::install_r_package(droplet, c("httr", "jsonlite"))
+  analogsea::install_r_package(
+    droplet,
+    unique(c("httr", "jsonlite", r_packages)))
 
 
   droplet_ls = function(droplet, path) {
@@ -88,7 +99,9 @@ do_provision_glm_api = function(
   }
 
 
-  install_github_r_package(droplet, "muschellij2/distribglm")
+  install_github_r_package(
+    droplet,
+    c("muschellij2/distribglm", github_r_packages))
 
   droplet$application_name = application_name
   droplet
@@ -102,8 +115,6 @@ do_remove_glm_api = function(
 
   deploy_check()
 
-
-  deploy_check()
   analogsea::droplet_ssh(
     droplet,
     paste("rm -rf",

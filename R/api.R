@@ -7,23 +7,52 @@ api_dep_check = function() {
 
 #' @rdname api
 #' @export
-api_available_models = function(url) {
-  b = httr::GET(paste0(url, "/available_models"))
+api_url = function(url = NULL) {
+  if (is.null(url)) {
+    url = getOption("distribglm_url")
+  }
+  if (is.null(url)) {
+    url = "https://rsconnect.biostat.jhsph.edu/distribglm"
+  }
+  return(url)
+}
+
+#' @rdname api
+#' @export
+api_set_url = function(url) {
+  options(distribglm_url = url)
+  return(url)
+}
+
+#' @rdname api
+#' @export
+api_available_models = function(
+  url = api_url(),
+  ...) {
+  b = httr::GET(
+    paste0(url, "/available_models"),
+    ...)
   beta = jsonlite::fromJSON(httr::content(b, as = "text"))
   return(beta)
 }
 
 #' @rdname api
 #' @export
-api_get_current_beta = function(url, model_name) {
+api_get_current_beta = function(
+  model_name,
+  url = api_url(),
+  ...) {
   api_dep_check()
   if (missing(model_name)) {
-    model_name = api_available_models(url = url)
+    model_name = api_available_models(url = url,
+                                      ...)
   }
   stopifnot(length(model_name) == 1)
-  b = httr::GET(paste0(url, "/get_current_beta"),
-                query = list(
-                  model_name = model_name))
+  b = httr::GET(
+    paste0(url, "/get_current_beta"),
+    query = list(
+      model_name = model_name),
+    ...)
   beta = jsonlite::fromJSON(httr::content(b, as = "text"))
   if (is.character(beta)) {
     beta = jsonlite::fromJSON(beta)
@@ -33,17 +62,21 @@ api_get_current_beta = function(url, model_name) {
 
 #' @rdname api
 #' @export
-api_model_specification = function(url, model_name) {
+api_model_specification = function(
+  model_name,
+  url = api_url(),
+  ...) {
   api_dep_check()
   if (missing(model_name)) {
-    model_name = api_available_models(url = url)
+    model_name = api_available_models(url = url, ...)
   }
   stopifnot(length(model_name) == 1)
   # check at the compute or data site
   mod_spec = httr::GET(paste0(url, "/model_specification"),
                        query = list(
                          model_name = model_name),
-                       encode = "json")
+                       encode = "json",
+                       ...)
   spec = jsonlite::fromJSON(httr::content(mod_spec, as = "text"))
   if (is.character(spec)) {
     spec = jsonlite::fromJSON(spec)
@@ -73,27 +106,35 @@ api_model_specification = function(url, model_name) {
 #'
 #' @export
 api_submit_gradient = function(
-  url, model_name, data, site_name,
+  model_name,
+  url = api_url(),
+  data, site_name,
   shuffle_rows = TRUE,
   verbose = TRUE,
-  dry_run = FALSE) {
+  dry_run = FALSE,
+  ...) {
 
   api_dep_check()
   if (missing(model_name)) {
-    model_name = api_available_models(url = url)
+    model_name = api_available_models(url = url,
+                                      ...)
   }
   stopifnot(length(model_name) == 1)
   stopifnot(length(site_name) == 1)
 
   # beta = api_model_specification(url, model_name)
-  beta = api_get_current_beta(url, model_name)
+  beta = api_get_current_beta(
+    url = url,
+    model_name = model_name,
+    ...)
 
   family = make_family(beta$family, link = beta$link)
   body = list(site_name = site_name,
               model_name = model_name)
   mod_spec = api_model_specification(
     url = url,
-    model_name = model_name)
+    model_name = model_name,
+    ...)
   if (!is.null(mod_spec$all_site_names)) {
     if (!site_name %in% mod_spec$all_site_names) {
       stop(paste0(
@@ -106,12 +147,13 @@ api_submit_gradient = function(
     }
   }
   site_name = match.arg(site_name, choices = mod_spec$all_site_names)
-  grad = gradient_value(beta = beta$beta,
-                        data = data,
-                        formula = beta$formula,
-                        family = family,
-                        iteration_number = beta$iteration_number,
-                        shuffle_rows = shuffle_rows)
+  grad = gradient_value(
+    beta = beta$beta,
+    data = data,
+    formula = beta$formula,
+    family = family,
+    iteration_number = beta$iteration_number,
+    shuffle_rows = shuffle_rows)
   # https://github.com/jeroen/jsonlite/issues/283
   # doing this due to json issue
   # class(grad$A_mat) = "character"
@@ -128,27 +170,34 @@ api_submit_gradient = function(
   body = jsonlite::toJSON(body, digits = 20)
 
   # submit a gradient
-  submitted = httr::PUT(paste0(url, "/submit_gradient_list"),
-                        # body = list(gradient_list = grad,
-                        #             site_name = "Brian",
-                        #             model_name = model_name),
-                        body = body,
-                        encode = "json")
+  submitted = httr::PUT(
+    paste0(url, "/submit_gradient_list"),
+    # body = list(gradient_list = grad,
+    #             site_name = "Brian",
+    #             model_name = model_name),
+    body = body,
+    encode = "json",
+    ...)
   submitted = jsonlite::fromJSON(httr::content(submitted, as = "text"))
   return(submitted)
 }
 
 #' @rdname api
 #' @export
-api_model_converged = function(url, model_name) {
+api_model_converged = function(
+  model_name,
+  url = api_url(),
+  ...) {
   api_dep_check()
   if (missing(model_name)) {
-    model_name = api_available_models(url = url)
+    model_name = api_available_models(url = url, ...)
   }
   stopifnot(length(model_name) == 1)
-  b = httr::GET(paste0(url, "/model_converged"),
-                query = list(
-                  model_name = model_name))
+  b = httr::GET(
+    paste0(url, "/model_converged"),
+    query = list(
+      model_name = model_name),
+    ...)
   conv = jsonlite::fromJSON(httr::content(b, as = "text"))
   if (is.character(conv)) {
     conv = jsonlite::fromJSON(conv)
@@ -158,11 +207,14 @@ api_model_converged = function(url, model_name) {
 
 #' @rdname api
 #' @export
-api_setup_model = function(url, model_name,
-                           formula = "y ~ x1 + x2",
-                           family = "binomial",
-                           link = "logit",
-                           all_site_names) {
+api_setup_model = function(
+  model_name,
+  url = api_url(),
+  formula = "y ~ x1 + x2",
+  family = "binomial",
+  link = "logit",
+  all_site_names,
+  ...) {
   api_dep_check()
   if (inherits(formula, "formula")) {
     formula = as.character(formula)
@@ -175,30 +227,36 @@ api_setup_model = function(url, model_name,
   link = family$link
   family = family$family
   if (missing(model_name)) {
-    model_name = api_available_models(url = url)
+    model_name = api_available_models(url = url, ...)
   }
   stopifnot(length(model_name) == 1)
-  res = httr::PUT(paste0(url, "/setup_model"),
-                  body = list(
-                    model_name = model_name,
-                    formula = formula,
-                    family = family,
-                    link = link,
-                    all_site_names = all_site_names),
-                  encode = "json")
+  res = httr::PUT(
+    paste0(url, "/setup_model"),
+    body = list(
+      model_name = model_name,
+      formula = formula,
+      family = family,
+      link = link,
+      all_site_names = all_site_names),
+    encode = "json",
+    ...)
   model_setup = jsonlite::fromJSON(httr::content(res, as = "text"))
   model_setup
 }
 
 #' @rdname api
 #' @export
-api_clear_model = function(url, model_name) {
+api_clear_model = function(model_name,
+                           url = api_url(),
+                           ...) {
   api_dep_check()
   stopifnot(length(model_name) == 1)
-  res = httr::PUT(paste0(url, "/clear_model"),
-                  body = list(
-                    model_name = model_name),
-                  encode = "json")
+  res = httr::PUT(
+    paste0(url, "/clear_model"),
+    body = list(
+      model_name = model_name),
+    ...,
+    encode = "json")
   model_setup = jsonlite::fromJSON(httr::content(res, as = "text"))
   model_setup
 }
@@ -210,7 +268,8 @@ api_clear_model = function(url, model_name) {
 #' \code{\link{api_submit_gradient}}
 #' @export
 api_estimate_model = function(
-  url, model_name,
+  model_name,
+  url = api_url(),
   data,
   site_name,
   wait_time = 1,
@@ -218,7 +277,9 @@ api_estimate_model = function(
   beta = list(converged = FALSE)
   while (!beta$converged) {
     # run at either site
-    beta = api_get_current_beta(url, model_name = model_name)
+    beta = api_get_current_beta(
+      url = url, model_name = model_name,
+      ...)
     print(beta)
 
     api_submit_gradient(
@@ -229,6 +290,6 @@ api_estimate_model = function(
       ...)
     Sys.sleep(wait_time)
   }
-  out = api_model_converged(url, model_name)
+  out = api_model_converged(url = url, model_name = model_name, ...)
   return(out)
 }

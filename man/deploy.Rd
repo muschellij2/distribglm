@@ -12,7 +12,9 @@ do_provision_glm_api(
   ...,
   application_name = "glm",
   port = 8000,
-  example = FALSE
+  example = FALSE,
+  r_packages = NULL,
+  github_r_packages = NULL
 )
 
 do_remove_glm_api(droplet, application_name = "glm")
@@ -47,6 +49,12 @@ argument of \code{do_deploy_api} function from \code{plumber} package}
 
 \item{example}{If TRUE, will deploy an example API
 named hello to the server on port 8000.}
+
+\item{r_packages}{Additional R packages to install, using
+\code{install.packages}}
+
+\item{github_r_packages}{Additional R packages to install from GitHub, using
+\code{remotes::install_github}}
 
 \item{droplet}{droplet to deploy on}
 
