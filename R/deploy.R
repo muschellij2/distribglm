@@ -101,7 +101,7 @@ do_provision_glm_api = function(
 
   install_github_r_package(
     droplet,
-    c("muschellij2/distribglm", github_r_packages))
+    unique(c("muschellij2/distribglm", github_r_packages)))
 
   droplet$application_name = application_name
   droplet
