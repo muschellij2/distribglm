@@ -79,7 +79,7 @@ do_provision_glm_api = function(
   droplet_apt_install = function(droplet, pack, update = TRUE) {
     cmd = ""
     if (update) {
-      cmd = "sudo apt-get update -q  && "
+      cmd = "sudo apt-get update -qq  && "
     }
     cmd = sprintf(paste0(cmd, " sudo apt-get install -y %s "),
                   pack)

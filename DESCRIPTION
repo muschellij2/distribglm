@@ -28,3 +28,6 @@ Suggests:
     plumber (>= 0.4.7.9000),
     analogsea (>= 0.8.0),
     ssh (>= 0.7.0)
+Remotes:
+	rstudio/plumber,
+	sckott/analogsea
