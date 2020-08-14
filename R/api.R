@@ -32,6 +32,7 @@ api_available_models = function(
   b = httr::GET(
     paste0(url, "/available_models"),
     ...)
+  httr::warn_for_status(b)
   beta = jsonlite::fromJSON(httr::content(b, as = "text"))
   return(beta)
 }
@@ -53,6 +54,7 @@ api_get_current_beta = function(
     query = list(
       model_name = model_name),
     ...)
+  httr::warn_for_status(b)
   beta = jsonlite::fromJSON(httr::content(b, as = "text"))
   if (is.character(beta)) {
     beta = jsonlite::fromJSON(beta)
@@ -77,6 +79,7 @@ api_model_specification = function(
                          model_name = model_name),
                        encode = "json",
                        ...)
+  httr::warn_for_status(mod_spec)
   spec = jsonlite::fromJSON(httr::content(mod_spec, as = "text"))
   if (is.character(spec)) {
     spec = jsonlite::fromJSON(spec)
@@ -178,6 +181,7 @@ api_submit_gradient = function(
     body = body,
     encode = "json",
     ...)
+  httr::warn_for_status(submitted)
   submitted = jsonlite::fromJSON(httr::content(submitted, as = "text"))
   return(submitted)
 }
@@ -198,6 +202,7 @@ api_model_converged = function(
     query = list(
       model_name = model_name),
     ...)
+  httr::warn_for_status(b)
   conv = jsonlite::fromJSON(httr::content(b, as = "text"))
   if (is.character(conv)) {
     conv = jsonlite::fromJSON(conv)
@@ -240,6 +245,7 @@ api_setup_model = function(
       all_site_names = all_site_names),
     encode = "json",
     ...)
+  httr::warn_for_status(res)
   model_setup = jsonlite::fromJSON(httr::content(res, as = "text"))
   model_setup
 }
@@ -257,6 +263,7 @@ api_clear_model = function(model_name,
       model_name = model_name),
     ...,
     encode = "json")
+  httr::warn_for_status(res)
   model_setup = jsonlite::fromJSON(httr::content(res, as = "text"))
   model_setup
 }

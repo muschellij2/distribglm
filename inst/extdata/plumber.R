@@ -5,7 +5,9 @@ library(readr)
 # data source is somewhere else! PRIVATE DATA
 
 synced_folder = "~/plumber_models"
-dir.create(synced_folder, recursive = TRUE)
+if (!dir.exists(synced_folder)) {
+  dir.create(synced_folder, recursive = TRUE, showWarnings = FALSE)
+}
 
 #* @apiTitle Run Distributed GLM
 #* @apiDescription Allows for the running of distributed generalized Linear models
@@ -57,7 +59,7 @@ function(model_name) {
 
   stopifnot(length(model_name) == 1)
   clear_model(model_name = model_name,
-                     synced_folder = synced_folder)
+              synced_folder = synced_folder)
   msg = paste0("Model ", model_name, " has been cleared")
   return(msg)
 }
