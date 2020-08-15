@@ -8,6 +8,24 @@ synced_folder = "~/plumber_models"
 if (!dir.exists(synced_folder)) {
   dir.create(synced_folder, recursive = TRUE, showWarnings = FALSE)
 }
+paste_formula = function(formula) {
+  formula = as.character(formula)
+  if (trimws(formula[1]) == "~") {
+    formula = formula[-1]
+  }
+  if (length(formula) >= 2) {
+    formula[2] = paste(formula[2:length(formula)], collapse = " + ")
+    formula = formula[1:2]
+  }
+  formula = paste0(formula[1], " ~ ", formula[2])
+}
+
+paste_family = function(family) {
+  fam = as.character(family$family)
+  link = family$link
+  list(family = fam,
+       link = link)
+}
 
 #* @apiTitle Run Distributed GLM
 #* @apiDescription Allows for the running of distributed generalized Linear models
@@ -295,6 +313,12 @@ function(model_name) {
     out = list(converged = FALSE)
   }
   out$model_name = model_name
+  if (inherits(out$setup$formula, "formula")) {
+    out$setup$formula = paste_formula(out$setup$formula)
+  }
+  if (inherits(out$setup$family, "family")) {
+    out$setup$family = paste_family(out$setup$family)
+  }
   out = jsonlite::toJSON(out, digits = 20)
   return(out)
 }
