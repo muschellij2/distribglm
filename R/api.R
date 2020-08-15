@@ -28,9 +28,11 @@ api_set_url = function(url) {
 #' @export
 api_available_models = function(
   url = api_url(),
+  config = list(),
   ...) {
   b = httr::GET(
     paste0(url, "/available_models"),
+    config = config,
     ...)
   httr::warn_for_status(b)
   beta = jsonlite::fromJSON(httr::content(b, as = "text"))
@@ -42,10 +44,12 @@ api_available_models = function(
 api_get_current_beta = function(
   model_name,
   url = api_url(),
+  config = list(),
   ...) {
   api_dep_check()
   if (missing(model_name)) {
     model_name = api_available_models(url = url,
+                                      config = config,
                                       ...)
   }
   stopifnot(length(model_name) == 1)
@@ -53,6 +57,7 @@ api_get_current_beta = function(
     paste0(url, "/get_current_beta"),
     query = list(
       model_name = model_name),
+    config = config,
     ...)
   httr::warn_for_status(b)
   beta = jsonlite::fromJSON(httr::content(b, as = "text"))
@@ -67,6 +72,7 @@ api_get_current_beta = function(
 api_model_specification = function(
   model_name,
   url = api_url(),
+  config = list(),
   ...) {
   api_dep_check()
   if (missing(model_name)) {
@@ -78,6 +84,7 @@ api_model_specification = function(
                        query = list(
                          model_name = model_name),
                        encode = "json",
+                       config = config,
                        ...)
   httr::warn_for_status(mod_spec)
   spec = jsonlite::fromJSON(httr::content(mod_spec, as = "text"))
@@ -106,6 +113,8 @@ api_model_specification = function(
 #' @param verbose print out diagnostic messages
 #' @param dry_run if \code{TRUE}, nothing with respect to the data
 #' is submitted to the server, but returned to see what would be submitted.
+#' @param config additional configuration settings such as http
+#' authentication and additional headers.
 #'
 #' @export
 api_submit_gradient = function(
@@ -115,11 +124,13 @@ api_submit_gradient = function(
   shuffle_rows = TRUE,
   verbose = TRUE,
   dry_run = FALSE,
+  config = list(),
   ...) {
 
   api_dep_check()
   if (missing(model_name)) {
     model_name = api_available_models(url = url,
+                                      config = config,
                                       ...)
   }
   stopifnot(length(model_name) == 1)
@@ -129,6 +140,7 @@ api_submit_gradient = function(
   beta = api_get_current_beta(
     url = url,
     model_name = model_name,
+    config = config,
     ...)
 
   family = make_family(beta$family, link = beta$link)
@@ -137,6 +149,7 @@ api_submit_gradient = function(
   mod_spec = api_model_specification(
     url = url,
     model_name = model_name,
+    config = config,
     ...)
   if (!is.null(mod_spec$all_site_names)) {
     if (!site_name %in% mod_spec$all_site_names) {
@@ -180,6 +193,7 @@ api_submit_gradient = function(
     #             model_name = model_name),
     body = body,
     encode = "json",
+    config = config,
     ...)
   httr::warn_for_status(submitted)
   submitted = jsonlite::fromJSON(httr::content(submitted, as = "text"))
@@ -191,16 +205,20 @@ api_submit_gradient = function(
 api_model_converged = function(
   model_name,
   url = api_url(),
+  config = list(),
   ...) {
   api_dep_check()
   if (missing(model_name)) {
-    model_name = api_available_models(url = url, ...)
+    model_name = api_available_models(url = url,
+                                      config = config,
+                                      ...)
   }
   stopifnot(length(model_name) == 1)
   b = httr::GET(
     paste0(url, "/model_converged"),
     query = list(
       model_name = model_name),
+    config = config,
     ...)
   httr::warn_for_status(b)
   conv = jsonlite::fromJSON(httr::content(b, as = "text"))
@@ -219,6 +237,7 @@ api_setup_model = function(
   family = "binomial",
   link = "logit",
   all_site_names,
+  config = list(),
   ...) {
   api_dep_check()
   if (inherits(formula, "formula")) {
@@ -232,7 +251,9 @@ api_setup_model = function(
   link = family$link
   family = family$family
   if (missing(model_name)) {
-    model_name = api_available_models(url = url, ...)
+    model_name = api_available_models(url = url,
+                                      config = config,
+                                      ...)
   }
   stopifnot(length(model_name) == 1)
   res = httr::PUT(
@@ -244,6 +265,7 @@ api_setup_model = function(
       link = link,
       all_site_names = all_site_names),
     encode = "json",
+    config = config,
     ...)
   httr::warn_for_status(res)
   model_setup = jsonlite::fromJSON(httr::content(res, as = "text"))
@@ -254,6 +276,7 @@ api_setup_model = function(
 #' @export
 api_clear_model = function(model_name,
                            url = api_url(),
+                           config = list(),
                            ...) {
   api_dep_check()
   stopifnot(length(model_name) == 1)
@@ -261,6 +284,7 @@ api_clear_model = function(model_name,
     paste0(url, "/clear_model"),
     body = list(
       model_name = model_name),
+    config = config,
     ...,
     encode = "json")
   httr::warn_for_status(res)
@@ -280,12 +304,14 @@ api_estimate_model = function(
   data,
   site_name,
   wait_time = 1,
+  config = list(),
   ...) {
   beta = list(converged = FALSE)
   while (!beta$converged) {
     # run at either site
     beta = api_get_current_beta(
       url = url, model_name = model_name,
+      config = config,
       ...)
     print(beta)
 
@@ -294,9 +320,18 @@ api_estimate_model = function(
       model_name = model_name,
       data = data,
       site_name = site_name,
+      config = config,
       ...)
     Sys.sleep(wait_time)
   }
-  out = api_model_converged(url = url, model_name = model_name, ...)
+  out = api_model_converged(url = url, model_name = model_name,
+                            config = config,
+                            ...)
   return(out)
+}
+
+rsconnect_authorization = function(
+  api_key = Sys.getenv("CONNECT_API_KEY")) {
+  auth_hdr = httr::add_headers(
+    Authorization = paste0("Key ", api_key))
 }

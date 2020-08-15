@@ -17,11 +17,11 @@ api_url(url = NULL)
 
 api_set_url(url)
 
-api_available_models(url = api_url(), ...)
+api_available_models(url = api_url(), config = list(), ...)
 
-api_get_current_beta(model_name, url = api_url(), ...)
+api_get_current_beta(model_name, url = api_url(), config = list(), ...)
 
-api_model_specification(model_name, url = api_url(), ...)
+api_model_specification(model_name, url = api_url(), config = list(), ...)
 
 api_submit_gradient(
   model_name,
@@ -31,10 +31,11 @@ api_submit_gradient(
   shuffle_rows = TRUE,
   verbose = TRUE,
   dry_run = FALSE,
+  config = list(),
   ...
 )
 
-api_model_converged(model_name, url = api_url(), ...)
+api_model_converged(model_name, url = api_url(), config = list(), ...)
 
 api_setup_model(
   model_name,
@@ -43,10 +44,11 @@ api_setup_model(
   family = "binomial",
   link = "logit",
   all_site_names,
+  config = list(),
   ...
 )
 
-api_clear_model(model_name, url = api_url(), ...)
+api_clear_model(model_name, url = api_url(), config = list(), ...)
 
 api_estimate_model(
   model_name,
@@ -54,11 +56,15 @@ api_estimate_model(
   data,
   site_name,
   wait_time = 1,
+  config = list(),
   ...
 )
 }
 \arguments{
 \item{url}{URL to the Plumber Server}
+
+\item{config}{additional configuration settings such as http
+authentication and additional headers.}
 
 \item{...}{addition alarguments to send to
 \code{\link{api_submit_gradient}}}
