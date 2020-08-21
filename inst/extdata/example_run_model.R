@@ -1,4 +1,6 @@
 
+# file = system.file("extdata/plumber.R", package = "distribglm")
+# plumber::plumb(file=file)$run(port = 8000)
 site_name = "site1"
 url = "http://138.68.235.233/glm"
 model_name = "example_model"

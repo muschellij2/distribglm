@@ -44,15 +44,21 @@ gradient_value = function(beta = NULL, data, formula,
   X = X[cc,]
   y = y[cc]
 
+  stopifnot(NCOL(y) == 1)
+  n = rep(1, length(y))
   if (is.null(beta)) {
     beta = rep(0, ncol(X))
   }
   family = make_family(family = family, link = link)
+  family
   # print(family)
   linkinv = family$linkinv
   # print(linkinv)
   variance <- family$variance
   mu.eta <- family$mu.eta
+  dev.resids <- family$dev.resids
+  aic <- family$aic
+
   # dev.resids <- family$dev.resids
   eta = drop(X %*% beta)
   mu = linkinv(eta)
@@ -72,6 +78,18 @@ gradient_value = function(beta = NULL, data, formula,
   wt = w^2
   residuals <- (y - mu)[good]/mu.eta.val[good]
   dispersion_sum = sum(wt * residuals^2)
+  deviance <- sum(dev.resids(y, mu, weights))
+
+  intercept = TRUE
+  offset = rep(0, length(y))
+  wtdmu <- if (intercept) {
+    sum(weights * y)/sum(weights)
+  } else {
+    linkinv(offset)
+  }
+  null.deviance <- sum(dev.resids(y, wtdmu, weights))
+  aic.model <- aic(y, n, mu, weights, deviance)
+
 
   # gradient here is d_loglik/d_beta without variance components
   # gradient = drop(t(X) %*% (y - mu))
@@ -88,7 +106,10 @@ gradient_value = function(beta = NULL, data, formula,
     A_mat = A,
     n_ok = sum(weights != 0),
     dispersion_sum = dispersion_sum,
-    u = u
+    u = u,
+    deviance = deviance,
+    null.deviance = null.deviance,
+    aic = aic.model
   )
   return(result)
 }
@@ -190,7 +211,10 @@ use_glm_gradient_value = function(
   result = list(
     gradient = gradient,
     sample_size = nrow(X),
-    iteration_number = iteration_number
+    iteration_number = iteration_number,
+    null.deviance = mod$null.deviance,
+    deviance = mod$deviance,
+    aic = mod$aic
   )
   return(result)
 }
@@ -227,6 +251,14 @@ aggregate_gradients = function(
   dispersion_sum = sapply(gradient_list, function(x) x$dispersion_sum)
   dispersion_sum = sum(dispersion_sum)
 
+  deviance = sapply(gradient_list, function(x) x$deviance)
+  deviance = sum(deviance)
+
+  null.deviance = sapply(gradient_list, function(x) x$null.deviance)
+  null.deviance = sum(null.deviance)
+
+  aic = sapply(gradient_list, function(x) x$aic)
+  aic = sum(aic)
 
   ss = sapply(gradient_list, function(x) x$sample_size)
   stopifnot(is.vector(ss))
@@ -248,6 +280,9 @@ aggregate_gradients = function(
     total_sample_size = n,
     covariance_unscaled = covariance,
     dispersion_sum = dispersion_sum,
+    deviance = deviance,
+    null.deviance = null.deviance,
+    aic = aic,
     iteration_number = iteration_number,
     n_ok = n_ok)
   return(result)
@@ -289,6 +324,8 @@ aggregate_gradients = function(
 #' @param shuffle_rows should the rows of the dataset be permuted, so
 #' as to decrease privacy concerns
 #' @param all_site_names all the site names used to fit this model
+#' @param experimental using the `glm` function rather than a
+#' custom-written function
 #'
 #'
 #' @return A character filename of the gradient file, with the
@@ -325,7 +362,8 @@ estimate_site_gradient = function(
   model_name, synced_folder,
   site_name = "site1", data,
   all_site_names = NULL,
-  shuffle_rows = TRUE) {
+  shuffle_rows = TRUE,
+  experimental = FALSE) {
 
 
   stopifnot(length(model_name) == 1)
@@ -392,18 +430,21 @@ estimate_site_gradient = function(
   } else {
     print(paste0("Writing Gradient, iteration ",
                  iteration_number))
-    # use_glm_gradient_value(beta = beta,
-    #                        data = data,
-    #                        formula = formula,
-    #                        family = family,
-    #                        iteration_number = iteration_number,
-    #                        shuffle_rows = shuffle_rows)
-    grad = gradient_value(beta = beta,
-                          data = data,
-                          formula = formula,
-                          family = family,
-                          iteration_number = iteration_number,
-                          shuffle_rows = shuffle_rows)
+    if (experimental) {
+      grad = use_glm_gradient_value(beta = beta,
+                                    data = data,
+                                    formula = formula,
+                                    family = family,
+                                    iteration_number = iteration_number,
+                                    shuffle_rows = shuffle_rows)
+    } else {
+      grad = gradient_value(beta = beta,
+                            data = data,
+                            formula = formula,
+                            family = family,
+                            iteration_number = iteration_number,
+                            shuffle_rows = shuffle_rows)
+    }
     print(grad)
     readr::write_rds(grad, gradient_file)
     rm(grad)
@@ -532,6 +573,9 @@ estimate_new_beta = function(
       gradient = result$gradient
       total_sample_size = result$total_sample_size
       dispersion_sum = result$dispersion_sum
+      deviance = result$deviance
+      null.deviance = result$null.deviance
+      aic = result$aic
       n_ok = result$n_ok
       A_mat = result$A_mat
       covariance_unscaled = result$covariance_unscaled
@@ -560,6 +604,7 @@ estimate_new_beta = function(
         final_beta_list = list(
           setup = formula_list,
           beta = beta,
+          coefficients = as.numeric(beta),
           num_iterations = iteration_number,
           gradient = gradient,
           tolerance = tolerance,
@@ -571,7 +616,12 @@ estimate_new_beta = function(
           covariance_unscaled = covariance_unscaled,
           dispersion_sum = dispersion_sum,
           df.residual = n_ok - q.r$rank,
+          # df.null = n_ok - as.integer(intercept)
+          df.null = n_ok - 1L,
           total_sample_size = total_sample_size,
+          deviance = deviance,
+          null.deviance = null.deviance,
+          aic = aic + 2 * q.r$rank,
           max_gradient = max(abs(gradient)))
         readr::write_rds(final_beta_list, final_file)
         return(final_file)
@@ -799,7 +849,8 @@ estimate_model = function(
   data,
   all_site_names = NULL,
   shuffle_rows = TRUE,
-  wait_time = 1) {
+  wait_time = 1,
+  experimental = FALSE) {
 
   final_file = model_output_file(model_name, synced_folder)
 
@@ -810,7 +861,8 @@ estimate_model = function(
       site_name = site_name,
       data = data,
       all_site_names = all_site_names,
-      shuffle_rows = shuffle_rows)
+      shuffle_rows = shuffle_rows,
+      experimental = experimental)
     Sys.sleep(wait_time)
   }
   out = readr::read_rds(final_file)

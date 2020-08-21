@@ -11,7 +11,8 @@ estimate_site_gradient(
   site_name = "site1",
   data,
   all_site_names = NULL,
-  shuffle_rows = TRUE
+  shuffle_rows = TRUE,
+  experimental = FALSE
 )
 
 estimate_model(
@@ -21,7 +22,8 @@ estimate_model(
   data,
   all_site_names = NULL,
   shuffle_rows = TRUE,
-  wait_time = 1
+  wait_time = 1,
+  experimental = FALSE
 )
 }
 \arguments{
@@ -38,6 +40,9 @@ estimate_model(
 
 \item{shuffle_rows}{should the rows of the dataset be permuted, so
 as to decrease privacy concerns}
+
+\item{experimental}{using the \code{glm} function rather than a
+custom-written function}
 
 \item{wait_time}{Time, in seconds, to wait until to try to
 get new estimate}
