@@ -29,6 +29,23 @@ paste_family = function(family) {
 }
 
 
+#* @preempt __first__
+#* @get /
+function(req, res) {
+  res$status <- 301 # redirect permanently, or other 300 range http status code
+  res$setHeader("Location", "../__docs__/")
+  res$body <- "redirecting..."
+  res
+}
+
+# # If you want to remove / from API spec
+# #* @plumber
+# function(pr) {
+#   plumber::pr_set_api_spec(pr, function(spec) {
+#     spec$paths$`/` <- NULL
+#     spec
+#   })
+# }
 
 #* @apiTitle Run Distributed GLM
 #* @apiDescription Allows for the running of distributed generalized Linear models

@@ -137,7 +137,7 @@ do_remove_glm_api = function(
   analogsea::droplet_ssh(
     droplet,
     paste("rm -rf",
-          paste0("/var/plumber/", application_name)))
+          paste0("/var/plumber/", application_name, "/*")))
 
   app_name = paste0("plumber-", application_name)
   analogsea::droplet_ssh(
