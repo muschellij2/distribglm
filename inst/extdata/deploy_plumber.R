@@ -30,7 +30,7 @@ tdir = path.expand(tdir)
 dir.create(tdir, recursive = TRUE)
 file.copy(local_file, file.path(tdir, "plumber.R"))
 
-plumber::do_deploy_api(
+plumberDeploy::do_deploy_api(
   droplet,
   path = "glm",
   localPath = tdir,

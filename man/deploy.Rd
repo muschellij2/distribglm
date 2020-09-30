@@ -23,7 +23,7 @@ do_deploy_glm_api(
   ...,
   application_name = "glm",
   port = 8000,
-  swagger = TRUE,
+  docs = TRUE,
   forward = TRUE,
   example = FALSE
 )
@@ -32,7 +32,7 @@ do_deploy_glm_api_only(
   droplet,
   application_name = "glm",
   port = 8000,
-  swagger = TRUE,
+  docs = TRUE,
   forward = TRUE
 )
 
@@ -40,10 +40,10 @@ do_list_plumber(droplet)
 }
 \arguments{
 \item{...}{arguments to pass to \code{do_provision} from
-\code{plumber} package}
+\code{plumberDeploy} package}
 
 \item{application_name}{Name of application, passed to \code{path}
-argument of \code{do_deploy_api} function from \code{plumber} package}
+argument of \code{do_deploy_api} function from \code{plumberDeploy} package}
 
 \item{port}{port to deploy on Digital Ocean}
 
@@ -58,18 +58,36 @@ named hello to the server on port 8000.}
 
 \item{droplet}{droplet to deploy on}
 
-\item{swagger}{enable the Swagger interface,
+\item{docs}{enable the Swagger interface,
 passed to \code{do_deploy_api} function from
-\code{plumber} package}
+\code{plumberDeploy} package}
 
 \item{forward}{setup requests targeting the root URL on the
 server to point to this application,
 passed to \code{do_deploy_api} function from
-\code{plumber} package}
+\code{plumberDeploy} package}
 }
 \value{
 A droplet instance
 }
 \description{
 Deploy GLM API on Digital Ocean (DO)
+}
+\examples{
+\dontrun{
+d = analogsea::droplets()
+if (length(d) == 0) {
+  droplet = NULL
+} else {
+  droplet = d[[1]]
+}
+droplet = do_provision_glm_api(droplet = droplet)
+droplet = do_deploy_glm_api_only(droplet)
+ip = analogsea:::droplet_ip(droplet)
+applet_url = paste0("http://", ip, ":", droplet$port, "/", droplet$application_name,
+"__docs__")
+if (interactive()) {
+browseURL(applet_url)
+}
+}
 }

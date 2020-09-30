@@ -2,6 +2,7 @@ library(plumber)
 library(distribglm)
 library(readr)
 
+
 # data source is somewhere else! PRIVATE DATA
 
 synced_folder = "~/plumber_models"
@@ -27,25 +28,31 @@ paste_family = function(family) {
        link = link)
 }
 
+
+
 #* @apiTitle Run Distributed GLM
 #* @apiDescription Allows for the running of distributed generalized Linear models
 
 #* Setup Model and Formula
-#*
 #* @param model_name:character name of your model
 #* @param clear_model:bool Should the model be cleared (all files deleted model with same name) before creating new model
 #* @param formula:character model formula to fit, with tilde syntax
 #* @param family:character generalized linear model family
 #* @param link:character link function for family
-#*
 #* @response A list of the specification and if the file exists
 #* @put /setup_model
 function(model_name,
-         clear_model = TRUE,
-         formula = "y ~ x1 + x2",
-         family = "binomial",
+         clear_model,
+         formula,
+         family,
          all_site_names,
-         link = NULL) {
+         link
+         # clear_model = TRUE,
+         # formula = "y ~ x1 + x2",
+         # family = "binomial",
+         # all_site_names,
+         # link = NULL
+         ) {
 
   family = make_family(family = family, link = link)
   char_formula = formula
@@ -70,7 +77,6 @@ function(model_name,
 
 #* Clears out a model
 #* @param model_name:character name of your model
-#*
 #* @response Indication if models cleared
 #* @put /clear_model
 function(model_name) {
@@ -83,7 +89,6 @@ function(model_name) {
 }
 
 #* Get Available Models
-#*
 #* @response A vector of the model names
 #* @get /available_models
 #* @put /available_models
@@ -106,9 +111,7 @@ function() {
 
 
 #* Get Model Specification
-#*
 #* @param model_name name of your model
-#*
 #* @response A list of the specification and if the file exists
 #* @get /model_specification
 function(model_name) {
@@ -144,8 +147,7 @@ function(model_name) {
 }
 
 #* Get Current beta
-#*
-#* @param model_name:character name of your model
+#* @param model_name character name of your model
 #* @response A list of beta coefficients and the iteration number
 #* @get /get_current_beta
 function(model_name) {
@@ -198,13 +200,12 @@ function(model_name) {
 
 
 #* Submit a set of estimated values, including the gradient
-#*
 #* @param model_name:character name of your model
 #* @param site_name:character Name of the site
 #* @param A:numeric vector of A, matrix
 #* @param u:numeric u vector
-#* @param n_ok number of samples
-#* @param dispersion_sum sum of the dispersion
+#* @param n_ok:int number of samples
+#* @param dispersion_sum:int sum of the dispersion
 #* @param iteration_number:int number of fitting iteration, used for tracking
 #* @response A message saying the file was created
 #* @put /submit_gradient
@@ -242,16 +243,20 @@ function(A, u, n_ok, site_name,
 
 
 #* Submit a list of estimated values, including the gradient
-#*
 #* @param model_name:character name of your model
 #* @param site_name:character Name of the site
 #* @param gradient_list A list of the gradient, from gradient_value function
 #* @param iteration_number:int number of fitting iteration, used for tracking
 #* @response A message saying the file was created
 #* @put /submit_gradient_list
-function(gradient_list, site_name = NULL,
-         model_name = NULL,
-         iteration_number = NULL) {
+function(gradient_list,
+         site_name,
+         model_name,
+         iteration_number
+         # site_name = NULL,
+         # model_name = NULL,
+         # iteration_number = NULL
+         ) {
   if (is.null(iteration_number)) {
     iteration_number = gradient_list$iteration_number
   }
@@ -295,7 +300,6 @@ function(gradient_list, site_name = NULL,
 
 
 #* Check Model Convergence
-#*
 #* @param model_name:character name of your model
 #* @response A message saying the model converged or not and a list of results
 #* @get /model_converged
@@ -322,3 +326,4 @@ function(model_name) {
   out = jsonlite::toJSON(out, digits = 20)
   return(out)
 }
+

@@ -1,6 +1,6 @@
 Package: distribglm
 Title: Distributed Generalized Linear Models
-Version: 0.3.0.9000
+Version: 0.4.0.9000
 Authors@R: c(person(given = "John",
                     family = "Muschelli",
                     email = "muschellij2@gmail.com",
@@ -25,10 +25,9 @@ Suggests:
     testthat (>= 2.1.0),
     httr,
     jsonlite,
-    plumber (>= 0.4.7.9000),
     plumberDeploy,
     analogsea (>= 0.8.0),
     ssh (>= 0.7.0)
 Remotes:
-	rstudio/plumber,
-	sckott/analogsea
+    meztez/plumberDeploy,
+    sckott/analogsea

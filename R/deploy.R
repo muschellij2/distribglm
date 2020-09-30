@@ -9,8 +9,8 @@ install_github_r_package = function(droplet, repo) {
 
 deploy_check = function() {
   if (!requireNamespace("analogsea", quietly = TRUE) ||
-      !requireNamespace("plumber", quietly = TRUE)) {
-    stop("analogsea and plumber necessary for deploying")
+      !requireNamespace("plumberDeploy", quietly = TRUE)) {
+    stop("analogsea and plumberDeploy necessary for deploying")
   }
 }
 
@@ -38,17 +38,17 @@ droplet_capture = function(droplet, command) {
 #' Deploy GLM API on Digital Ocean (DO)
 #'
 #' @param ... arguments to pass to \code{do_provision} from
-#' \code{plumber} package
+#' \code{plumberDeploy} package
 #' @param application_name Name of application, passed to \code{path}
-#' argument of \code{do_deploy_api} function from \code{plumber} package
+#' argument of \code{do_deploy_api} function from \code{plumberDeploy} package
 #' @param port port to deploy on Digital Ocean
-#' @param swagger enable the Swagger interface,
+#' @param docs enable the Swagger interface,
 #' passed to \code{do_deploy_api} function from
-#' \code{plumber} package
+#' \code{plumberDeploy} package
 #' @param forward setup requests targeting the root URL on the
 #' server to point to this application,
 #' passed to \code{do_deploy_api} function from
-#' \code{plumber} package
+#' \code{plumberDeploy} package
 #' @param example If TRUE, will deploy an example API
 #' named hello to the server on port 8000.
 #' @param r_packages Additional R packages to install, using
@@ -60,6 +60,23 @@ droplet_capture = function(droplet, command) {
 #' @return A droplet instance
 #' @rdname deploy
 #' @export
+#' @examples
+#' \dontrun{
+#' d = analogsea::droplets()
+#' if (length(d) == 0) {
+#'   droplet = NULL
+#' } else {
+#'   droplet = d[[1]]
+#' }
+#' droplet = do_provision_glm_api(droplet = droplet)
+#' droplet = do_deploy_glm_api_only(droplet)
+#' ip = analogsea:::droplet_ip(droplet)
+#' applet_url = paste0("http://", ip, ":", droplet$port, "/", droplet$application_name,
+#' "__docs__")
+#' if (interactive()) {
+#' browseURL(applet_url)
+#' }
+#' }
 do_provision_glm_api = function(
   ...,
   application_name = "glm",
@@ -73,7 +90,7 @@ do_provision_glm_api = function(
     stop("You chose to load the example, but also use port ",
          "8000, this will cause failures, please change port")
   }
-  droplet <- plumber::do_provision(..., example = example)
+  droplet <- plumberDeploy::do_provision(..., example = example)
   analogsea::install_r_package(droplet, c("readr", "remotes"))
 
   droplet_apt_install = function(droplet, pack, update = TRUE) {
@@ -86,6 +103,8 @@ do_provision_glm_api = function(
     analogsea::droplet_ssh(droplet,cmd)
   }
   droplet_apt_install(droplet, "libcurl4-openssl-dev")
+  droplet_apt_install(droplet, "libssh-dev")
+
   droplet_apt_install(droplet, "libssl-dev", update = FALSE)
   analogsea::install_r_package(
     droplet,
@@ -152,7 +171,7 @@ do_deploy_glm_api = function(
   ...,
   application_name = "glm",
   port = 8000,
-  swagger = TRUE,
+  docs = TRUE,
   forward = TRUE,
   example = FALSE
 ) {
@@ -166,9 +185,8 @@ do_deploy_glm_api = function(
     droplet = droplet,
     application_name = application_name,
     port = port,
-    swagger = swagger,
+    docs = docs,
     forward = forward)
-  res$application_name = application_name
   res
 }
 
@@ -180,7 +198,7 @@ do_deploy_glm_api_only = function(
   droplet,
   application_name = "glm",
   port = 8000,
-  swagger = TRUE,
+  docs = TRUE,
   forward = TRUE) {
   deploy_check()
 
@@ -194,14 +212,16 @@ do_deploy_glm_api_only = function(
   dir.create(tdir, recursive = TRUE)
   file.copy(local_file, file.path(tdir, "plumber.R"))
 
-  res = plumber::do_deploy_api(
+  res = plumberDeploy::do_deploy_api(
     droplet,
     path = application_name,
     localPath = tdir,
     port = port,
-    swagger = swagger,
+    docs = docs,
     forward = forward)
   res$application_name = application_name
+  res$port = port
+  res$docs = docs
   res
 }
 
