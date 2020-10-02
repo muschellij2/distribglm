@@ -88,7 +88,7 @@ gradient_value = function(beta = NULL, data, formula,
   } else {
     linkinv(offset)
   }
-  null.deviance <- sum(dev.resids(y, wtdmu, weights))
+  # null.deviance <- sum(dev.resids(y, wtdmu, weights))
   aic.model <- aic(y, n, mu, weights, deviance)
 
 
@@ -109,7 +109,7 @@ gradient_value = function(beta = NULL, data, formula,
     dispersion_sum = dispersion_sum,
     u = u,
     deviance = deviance,
-    null.deviance = null.deviance,
+    # null.deviance = null.deviance,
     aic = aic.model,
     beta_names = beta_names
   )
@@ -218,7 +218,7 @@ use_glm_gradient_value = function(
     gradient = gradient,
     sample_size = nrow(X),
     iteration_number = iteration_number,
-    null.deviance = mod$null.deviance,
+    # null.deviance = mod$null.deviance,
     deviance = mod$deviance,
     aic = mod$aic,
     beta_names = beta_names
@@ -274,8 +274,8 @@ aggregate_gradients = function(
   deviance = sapply(gradient_list, function(x) x$deviance)
   deviance = sum(deviance)
 
-  null.deviance = sapply(gradient_list, function(x) x$null.deviance)
-  null.deviance = sum(null.deviance)
+  # null.deviance = sapply(gradient_list, function(x) x$null.deviance)
+  # null.deviance = sum(null.deviance)
 
   aic = sapply(gradient_list, function(x) x$aic)
   aic = sum(aic)
@@ -302,7 +302,7 @@ aggregate_gradients = function(
     covariance_unscaled = covariance,
     dispersion_sum = dispersion_sum,
     deviance = deviance,
-    null.deviance = null.deviance,
+    # null.deviance = null.deviance,
     aic = aic,
     iteration_number = iteration_number,
     n_ok = n_ok,
@@ -600,7 +600,7 @@ estimate_new_beta = function(
       total_sample_size = result$total_sample_size
       dispersion_sum = result$dispersion_sum
       deviance = result$deviance
-      null.deviance = result$null.deviance
+      # null.deviance = result$null.deviance
       aic = result$aic
       n_ok = result$n_ok
       A_mat = result$A_mat
@@ -652,7 +652,7 @@ estimate_new_beta = function(
           df.null = n_ok - 1L,
           total_sample_size = total_sample_size,
           deviance = deviance,
-          null.deviance = null.deviance,
+          # null.deviance = null.deviance,
           aic = aic + 2 * q.r$rank,
           beta_names = beta_names,
           max_gradient = max(abs(gradient)))
