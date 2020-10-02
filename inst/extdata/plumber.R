@@ -193,7 +193,7 @@ function(model_name) {
   family = formula_list$family
 
   print(formula_list)
-  run = estimate_new_beta(
+  result = estimate_new_beta(
     model_name = model_name,
     synced_folder = synced_folder,
     all_site_names = formula_list$all_site_names)

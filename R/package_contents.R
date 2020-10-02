@@ -40,6 +40,7 @@ gradient_value = function(beta = NULL, data, formula,
   formula = as.formula(formula)
   y = model.frame(formula, data = data)[,1]
   X = model.matrix(formula, data = data)
+  beta_names = colnames(X)
   cc = complete.cases(X)
   X = X[cc,]
   y = y[cc]
@@ -109,7 +110,8 @@ gradient_value = function(beta = NULL, data, formula,
     u = u,
     deviance = deviance,
     null.deviance = null.deviance,
-    aic = aic.model
+    aic = aic.model,
+    beta_names = beta_names
   )
   return(result)
 }
@@ -197,6 +199,8 @@ use_glm_gradient_value = function(
   }
   formula = as.formula(formula)
   X = model.matrix(formula, data = data)
+  beta_names = colnames(X)
+
   # mu.eta <- family$mu.eta
   if (is.null(beta)) {
     beta = rep(0, ncol(X))
@@ -216,7 +220,8 @@ use_glm_gradient_value = function(
     iteration_number = iteration_number,
     null.deviance = mod$null.deviance,
     deviance = mod$deviance,
-    aic = mod$aic
+    aic = mod$aic,
+    beta_names = beta_names
   )
   return(result)
 }
@@ -250,6 +255,19 @@ aggregate_gradients = function(
   n_ok = sapply(gradient_list, function(x) x$n_ok)
   n_ok = sum(n_ok)
 
+  check_beta_names = sapply(gradient_list, function(x) {
+    if (is.null(x$beta_names)) {
+      return(FALSE)
+    }
+    all(x$beta_names == gradient_list[[1]]$beta_names)
+  })
+  beta_names = NULL
+  if (!all(check_beta_names)) {
+    warning("Not all the names for beta are equal, may be an error")
+  } else {
+    beta_names = gradient_list[[1]]$beta_names
+  }
+
   dispersion_sum = sapply(gradient_list, function(x) x$dispersion_sum)
   dispersion_sum = sum(dispersion_sum)
 
@@ -270,6 +288,7 @@ aggregate_gradients = function(
   })
   A_mat = rowSums(A_mat)
   A_mat = array(A_mat, dim = dim(gradient_list[[1]]$A_mat))
+  colnames(A_mat) = rownames(A_mat) = beta_names
   u = sapply(gradient_list, function(x) {
     u = x$u
   })
@@ -286,7 +305,8 @@ aggregate_gradients = function(
     null.deviance = null.deviance,
     aic = aic,
     iteration_number = iteration_number,
-    n_ok = n_ok)
+    n_ok = n_ok,
+    beta_names = beta_names)
   return(result)
   #
   # sum_grads = sapply(gradient_list, function(x) x$gradient)
@@ -587,6 +607,7 @@ estimate_new_beta = function(
       covariance_unscaled = result$covariance_unscaled
       tol <- max(dim(A_mat)) * .Machine$double.eps
       q.r = qr(A_mat, tol = tol, LAPACK = FALSE)
+      beta_names = result$beta_names
 
       object = formula_list
       if (object$family$family %in% c("poisson", "binomial")) {
@@ -633,6 +654,7 @@ estimate_new_beta = function(
           deviance = deviance,
           null.deviance = null.deviance,
           aic = aic + 2 * q.r$rank,
+          beta_names = beta_names,
           max_gradient = max(abs(gradient)))
         readr::write_rds(final_beta_list, final_file)
         return(final_file)
@@ -652,7 +674,8 @@ estimate_new_beta = function(
         covariance = covariance,
         covariance_unscaled = covariance_unscaled,
         dispersion_sum = dispersion_sum,
-        df.residual = n_ok - q.r$rank
+        df.residual = n_ok - q.r$rank,
+        beta_names = beta_names
       )
       readr::write_rds(beta_list, out_beta_file)
       rm(beta_list)
