@@ -28,21 +28,24 @@ paste_family = function(family) {
        link = link)
 }
 
-#* @get /
-#* @serializer html
-function(){
-  '<html><body><h1>Please visit the <a href="./__docs__/">docs page</a> for documentation</h1></body></html>'
-}
+########################################################################
+# If you are not using RStudio Connect, you can uncomment the below lines
+# for a simple redirect to the documentation
+########################################################################
 
-
-# If you want to remove / from API spec
-#* @plumber
-function(pr) {
-  plumber::pr_set_api_spec(pr, function(spec) {
-    spec$paths$`/` <- NULL
-    spec
-  })
-}
+# #* @get /
+# #* @serializer html
+# function(){
+#   '<html><body><h1>Please visit the <a href="./__docs__/">docs page</a> for documentation</h1></body></html>'
+# }
+# # If you want to remove / from API spec
+# #* @plumber
+# function(pr) {
+#   plumber::pr_set_api_spec(pr, function(spec) {
+#     spec$paths$`/` <- NULL
+#     spec
+#   })
+# }
 
 #* @apiTitle Run Distributed GLM
 #* @apiDescription Allows for the running of distributed generalized Linear models

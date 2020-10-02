@@ -12,7 +12,8 @@ setup_model(
   formula = y ~ x1 + x2,
   family = binomial(),
   all_site_names = NULL,
-  link = NULL
+  link = NULL,
+  max_iterations = 100
 )
 
 make_family(family, link = NULL)
@@ -32,6 +33,8 @@ model with same name) before creating new model}
 \item{all_site_names}{all the site names to fit this model}
 
 \item{link}{link function to use with family}
+
+\item{max_iterations}{maximum number of iterations to run}
 }
 \value{
 A character path to a formula/model file

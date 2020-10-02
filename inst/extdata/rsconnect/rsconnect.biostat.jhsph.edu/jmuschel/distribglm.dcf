@@ -5,9 +5,9 @@ account: jmuschel
 server: rsconnect.biostat.jhsph.edu
 hostUrl: https://rsconnect.biostat.jhsph.edu/__api__
 appId: 31
-bundleId: 129
+bundleId: 166
 url: https://rsconnect.biostat.jhsph.edu/distribglm/
-when: 1597531223.3719
+when: 1601663683.30139
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: data_site1.csv|data_site2.csv|deploy_plumber.R|example_create_model.R|example_deploy.R|example_run_model.R|example_sync_compute_site.R|example_sync_site.R

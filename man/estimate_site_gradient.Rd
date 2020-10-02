@@ -48,7 +48,9 @@ custom-written function}
 \item{wait_time}{Time, in seconds, to wait until to try to
 get new estimate}
 
-\item{run_compute}{if \code{TRUE}, when estimating the model}
+\item{run_compute}{if \code{TRUE}, when estimating the model, it will also
+try to run \code{\link{estimate_new_beta}} if all other sites have submitted.
+This allows all sites to be a potential computation site.}
 }
 \value{
 A character filename of the gradient file, with the

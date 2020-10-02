@@ -124,7 +124,7 @@ gradient_value = function(beta = NULL, data, formula,
 #' @param family generalized linear model family, see \code{\link{family}}
 #' @param all_site_names all the site names to fit this model
 #' @param link link function to use with family
-#'
+#' @param max_iterations maximum number of iterations to run
 #'
 #' @return A character path to a formula/model file
 #' @export
@@ -141,7 +141,8 @@ setup_model = function(model_name, synced_folder,
                        formula = y ~ x1 + x2,
                        family = binomial(),
                        all_site_names = NULL,
-                       link = NULL) {
+                       link = NULL,
+                       max_iterations = 100) {
   # this structure is the same on all sites
   fols = file.path(synced_folder,
                    c("formulas", "gradients", "models",
@@ -166,7 +167,8 @@ setup_model = function(model_name, synced_folder,
 
   L = list(formula = formula,
            family = family,
-           model_name = model_name)
+           model_name = model_name,
+           max_iterations = max_iterations)
   L$all_site_names = all_site_names
   readr::write_rds(L, formula_file)
   return(formula_file)
@@ -537,6 +539,10 @@ estimate_new_beta = function(
   formula_file = file.path(model_folder,
                            paste0(model_name, ".rds"))
   formula_list = readr::read_rds(formula_file)
+  max_iterations = formula_list$max_iterations
+  if (is.null(max_iterations)) {
+    max_iterations = 100
+  }
 
   if (is.null(all_site_names)) {
     if (!file.exists(formula_file)) {
@@ -599,13 +605,18 @@ estimate_new_beta = function(
         epsilon = max(abs(gradient)/(abs(beta) + 0.1))
       }
       # print(epsilon)
-      if (epsilon < tolerance) {
-        print("Model has converged!")
+      converged = epsilon < tolerance
+      if (converged || iteration_number >= max_iterations) {
+        if (converged) {
+          print("Model has converged!")
+        }
         final_beta_list = list(
           setup = formula_list,
           beta = beta,
           coefficients = as.numeric(beta),
           num_iterations = iteration_number,
+          max_iterations = max_iterations,
+          converged = converged,
           gradient = gradient,
           tolerance = tolerance,
           epsilon = epsilon,
@@ -842,7 +853,9 @@ make_family = function(family, link = NULL) {
 #' @rdname estimate_site_gradient
 #' @param wait_time Time, in seconds, to wait until to try to
 #' get new estimate
-#' @param run_compute if \code{TRUE}, when estimating the model
+#' @param run_compute if \code{TRUE}, when estimating the model, it will also
+#' try to run \code{\link{estimate_new_beta}} if all other sites have submitted.
+#' This allows all sites to be a potential computation site.
 #' @export
 estimate_model = function(
   model_name, synced_folder,
