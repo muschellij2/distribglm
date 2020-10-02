@@ -360,15 +360,15 @@ function(model_name) {
                          paste0(model_name, ".rds"))
   if (file.exists(final_file)) {
     out = readr::read_rds(final_file)
-    if (!"family" %in% names(out)) {
-      out$family = family
-    }
-    if (!"formula" %in% names(out)) {
-      out$formula = formula
-    }
     out$converged = TRUE
   } else {
     out = list(converged = FALSE)
+  }
+  if (!"family" %in% names(out)) {
+    out$family = family
+  }
+  if (!"formula" %in% names(out)) {
+    out$formula = formula
   }
   out$model_name = model_name
   if (inherits(out$setup$formula, "formula")) {
@@ -376,6 +376,13 @@ function(model_name) {
   }
   if (inherits(out$setup$family, "family")) {
     out$setup$family = paste_family(out$setup$family)
+  }
+
+  if (inherits(out$formula, "formula")) {
+    out$formula = paste_formula(out$formula)
+  }
+  if (inherits(out$family, "family")) {
+    out$family = paste_family(out$family)
   }
   out = jsonlite::toJSON(out, digits = 20)
   return(out)
