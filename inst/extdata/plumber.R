@@ -200,6 +200,8 @@ function(model_name) {
   result = get_current_beta(
     model_name = model_name,
     synced_folder = synced_folder)
+  result$setup = NULL
+
   result$formula = formula
   result$family = family$family
   result$link = family$link
