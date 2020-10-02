@@ -339,12 +339,33 @@ function(gradient_list,
 function(model_name) {
   file_list = folder_names(synced_folder)
   converged_folder = file_list$converged_folder
+  model_folder = file_list$model_folder
 
+
+  formula_file = file.path(model_folder,
+                           paste0(model_name, ".rds"))
+  if (file.exists(formula_file)) {
+    formula_list = readr::read_rds(formula_file)
+    formula = formula_list$formula
+    formula = as.character(formula)
+    formula = trimws(formula)
+    formula = formula[ formula != "~"]
+    formula = paste0(formula[1], " ~ ",
+                     paste0(formula[-1], collapse = " + "))
+
+    family = formula_list$family
+  }
 
   final_file = file.path(converged_folder,
                          paste0(model_name, ".rds"))
   if (file.exists(final_file)) {
     out = readr::read_rds(final_file)
+    if (!"family" %in% names(out)) {
+      out$family = family
+    }
+    if (!"formula" %in% names(out)) {
+      out$formula = formula
+    }
     out$converged = TRUE
   } else {
     out = list(converged = FALSE)
