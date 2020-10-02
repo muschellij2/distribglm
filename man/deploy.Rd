@@ -84,10 +84,9 @@ if (length(d) == 0) {
 droplet = do_provision_glm_api(droplet = droplet)
 droplet = do_deploy_glm_api_only(droplet)
 ip = analogsea:::droplet_ip(droplet)
-applet_url = paste0("http://", ip, ":", droplet$port, "/", droplet$application_name,
-"__docs__")
+applet_url = paste0("http://", ip, "/", droplet$application_name)
 if (interactive()) {
-browseURL(applet_url)
+    browseURL(applet_url)
 }
 }
 }

@@ -842,6 +842,7 @@ make_family = function(family, link = NULL) {
 #' @rdname estimate_site_gradient
 #' @param wait_time Time, in seconds, to wait until to try to
 #' get new estimate
+#' @param run_compute if \code{TRUE}, when estimating the model
 #' @export
 estimate_model = function(
   model_name, synced_folder,
@@ -850,6 +851,7 @@ estimate_model = function(
   all_site_names = NULL,
   shuffle_rows = TRUE,
   wait_time = 1,
+  run_compute = FALSE,
   experimental = FALSE) {
 
   final_file = model_output_file(model_name, synced_folder)
@@ -864,6 +866,15 @@ estimate_model = function(
       shuffle_rows = shuffle_rows,
       experimental = experimental)
     Sys.sleep(wait_time)
+    if (run_compute) {
+      final_file = model_output_file(model_name, synced_folder)
+      if (!file.exists(final_file)) {
+        run = estimate_new_beta(
+          model_name = model_name,
+          synced_folder = synced_folder,
+          all_site_names = all_site_names)
+      }
+    }
   }
   out = readr::read_rds(final_file)
   return(out)

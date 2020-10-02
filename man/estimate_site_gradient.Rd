@@ -23,6 +23,7 @@ estimate_model(
   all_site_names = NULL,
   shuffle_rows = TRUE,
   wait_time = 1,
+  run_compute = FALSE,
   experimental = FALSE
 )
 }
@@ -46,6 +47,8 @@ custom-written function}
 
 \item{wait_time}{Time, in seconds, to wait until to try to
 get new estimate}
+
+\item{run_compute}{if \code{TRUE}, when estimating the model}
 }
 \value{
 A character filename of the gradient file, with the

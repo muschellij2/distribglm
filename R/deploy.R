@@ -71,10 +71,9 @@ droplet_capture = function(droplet, command) {
 #' droplet = do_provision_glm_api(droplet = droplet)
 #' droplet = do_deploy_glm_api_only(droplet)
 #' ip = analogsea:::droplet_ip(droplet)
-#' applet_url = paste0("http://", ip, ":", droplet$port, "/", droplet$application_name,
-#' "__docs__")
+#' applet_url = paste0("http://", ip, "/", droplet$application_name)
 #' if (interactive()) {
-#' browseURL(applet_url)
+#'     browseURL(applet_url)
 #' }
 #' }
 do_provision_glm_api = function(
@@ -212,6 +211,10 @@ do_deploy_glm_api_only = function(
   dir.create(tdir, recursive = TRUE)
   file.copy(local_file, file.path(tdir, "plumber.R"))
 
+  try({
+    plumberDeploy::do_remove_api(droplet, path = application_name,
+                               delete = TRUE)
+  }, silent = TRUE)
   res = plumberDeploy::do_deploy_api(
     droplet,
     path = application_name,
