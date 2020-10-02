@@ -780,30 +780,32 @@ get_current_beta = function(model_name, synced_folder) {
     beta = NULL
     rank = n_ok = dispersion_sum = covariance_unscaled = covariance = NULL
     iteration_number = 1
+    L = list(
+      iteration_number = 1
+    )
   } else {
     beta_number = sub(".*iteration(.*)[.]rds", "\\1",
                       basename(all_beta_files))
     beta_number = as.numeric(beta_number)
     beta_list = read_rds(all_beta_files[ which.max(beta_number)])
-    beta = beta_list$beta
-    rank = beta_list$rank
-    n_ok = beta_list$n_ok
-    dispersion_sum = beta_list$dispersion_sum
-    covariance = beta_list$covariance
-    covariance_unscaled = beta_list$covariance_unscaled
-    iteration_number = beta_list$iteration_number_next
+    L = beta_list
+    # beta = beta_list$beta
+    # rank = beta_list$rank
+    # n_ok = beta_list$n_ok
+    # dispersion_sum = beta_list$dispersion_sum
+    # covariance = beta_list$covariance
+    # covariance_unscaled = beta_list$covariance_unscaled
+    # iteration_number = beta_list$iteration_number_next
   }
-  L = list(
-    iteration_number = iteration_number
-  )
-  L$beta =  beta
-  L$covariance =  covariance
-  L$covariance_unscaled =  covariance_unscaled
-  L$rank = rank
-  L$n_ok = n_ok
-  L$dispersion_sum = dispersion_sum
-  L$df.residual = n_ok - rank
-  L$model_name = model_name
+
+  # L$beta =  beta
+  # L$covariance =  covariance
+  # L$covariance_unscaled =  covariance_unscaled
+  # L$rank = rank
+  # L$n_ok = n_ok
+  # L$dispersion_sum = dispersion_sum
+  # L$df.residual = n_ok - rank
+  # L$model_name = model_name
   return(L)
 }
 

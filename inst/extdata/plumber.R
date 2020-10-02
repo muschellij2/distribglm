@@ -59,13 +59,13 @@ paste_family = function(family) {
 #* @response A list of the specification and if the file exists
 #* @put /setup_model
 function(model_name,
-         clear_model,
-         formula,
-         family,
+         clear_model = TRUE,
+         formula = "y ~ x1 + x2",
+         family = "binomial",
          all_site_names,
          link
-         # clear_model = TRUE,
-         # formula = "y ~ x1 + x2",
+         # ,
+         # ,
          # family = "binomial",
          # all_site_names,
          # link = NULL
@@ -74,6 +74,9 @@ function(model_name,
   family = make_family(family = family, link = link)
   char_formula = formula
   formula = as.formula(formula)
+  if (missing(link)) {
+    link = NULL
+  }
   file = setup_model(model_name = model_name,
                      synced_folder = synced_folder,
                      clear_model = clear_model,
@@ -205,8 +208,9 @@ function(model_name) {
 
   final_file = file.path(converged_folder,
                          paste0(model_name, ".rds"))
-  result$converged = file.exists(final_file)
-  result$all_site_names = formula_list$all_site_names
+  if (!"converged" %in% names(result)) {
+    result$converged = file.exists(final_file)
+  }
   result = jsonlite::toJSON(result, digits = 20)
   return(result)
 }
@@ -274,6 +278,16 @@ function(gradient_list,
          # model_name = NULL,
          # iteration_number = NULL
          ) {
+  if (missing(site_name)) {
+    site_name = NULL
+  }
+  if (missing(model_name)) {
+    model_name = NULL
+  }
+  if (missing(iteration_number)) {
+    iteration_number = NULL
+  }
+
   if (is.null(iteration_number)) {
     iteration_number = gradient_list$iteration_number
   }

@@ -57,6 +57,7 @@ api_estimate_model(
   site_name,
   wait_time = 1,
   config = list(),
+  verbose = TRUE,
   ...
 )
 }

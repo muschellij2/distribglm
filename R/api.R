@@ -305,6 +305,7 @@ api_estimate_model = function(
   site_name,
   wait_time = 1,
   config = list(),
+  verbose = TRUE,
   ...) {
   beta = list(converged = FALSE)
   while (!beta$converged) {
@@ -313,7 +314,9 @@ api_estimate_model = function(
       url = url, model_name = model_name,
       config = config,
       ...)
-    print(beta)
+    if (verbose) {
+      print(beta)
+    }
 
     api_submit_gradient(
       url = url,
@@ -321,6 +324,7 @@ api_estimate_model = function(
       data = data,
       site_name = site_name,
       config = config,
+      verbose = verbose,
       ...)
     Sys.sleep(wait_time)
   }
