@@ -5,6 +5,7 @@
 \alias{api_set_url}
 \alias{api_available_models}
 \alias{api_get_current_beta}
+\alias{api_get_model_trace}
 \alias{api_model_specification}
 \alias{api_submit_gradient}
 \alias{api_model_converged}
@@ -20,6 +21,8 @@ api_set_url(url)
 api_available_models(url = api_url(), config = list(), ...)
 
 api_get_current_beta(model_name, url = api_url(), config = list(), ...)
+
+api_get_model_trace(model_name, url = api_url(), config = list(), ...)
 
 api_model_specification(model_name, url = api_url(), config = list(), ...)
 

@@ -69,6 +69,34 @@ api_get_current_beta = function(
 
 #' @rdname api
 #' @export
+api_get_model_trace = function(
+  model_name,
+  url = api_url(),
+  config = list(),
+  ...) {
+  api_dep_check()
+  if (missing(model_name)) {
+    model_name = api_available_models(url = url,
+                                      config = config,
+                                      ...)
+  }
+  stopifnot(length(model_name) == 1)
+  b = httr::GET(
+    paste0(url, "/get_model_trace"),
+    query = list(
+      model_name = model_name),
+    config = config,
+    ...)
+  httr::warn_for_status(b)
+  beta = jsonlite::fromJSON(httr::content(b, as = "text"))
+  if (is.character(beta)) {
+    beta = jsonlite::fromJSON(beta)
+  }
+  return(beta)
+}
+
+#' @rdname api
+#' @export
 api_model_specification = function(
   model_name,
   url = api_url(),
