@@ -69,7 +69,7 @@ api_get_current_beta = function(
 
 #' @rdname api
 #' @export
-api_get_model_trace = function(
+api_model_trace = function(
   model_name,
   url = api_url(),
   config = list(),
@@ -82,7 +82,7 @@ api_get_model_trace = function(
   }
   stopifnot(length(model_name) == 1)
   b = httr::GET(
-    paste0(url, "/get_model_trace"),
+    paste0(url, "/model_trace"),
     query = list(
       model_name = model_name),
     config = config,
