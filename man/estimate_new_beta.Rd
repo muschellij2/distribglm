@@ -9,14 +9,14 @@ estimate_new_beta(
   model_name,
   synced_folder,
   all_site_names = NULL,
-  tolerance = 1e-08
+  tolerance = 1e-09
 )
 
 compute_model(
   model_name,
   synced_folder,
   all_site_names = NULL,
-  tolerance = 1e-08,
+  tolerance = 1e-09,
   wait_time = 5
 )
 }

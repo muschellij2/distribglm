@@ -517,7 +517,7 @@ estimate_site_gradient = function(
 estimate_new_beta = function(
   model_name, synced_folder,
   all_site_names = NULL,
-  tolerance = 1e-8) {
+  tolerance = 1e-9) {
 
   stopifnot(length(model_name) == 1)
 
@@ -925,7 +925,7 @@ estimate_model = function(
 compute_model = function(
   model_name, synced_folder,
   all_site_names = NULL,
-  tolerance = 1e-8,
+  tolerance = 1e-9,
   wait_time = 5
 ) {
   final_file = model_output_file(model_name, synced_folder)
