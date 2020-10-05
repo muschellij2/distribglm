@@ -626,7 +626,7 @@ estimate_new_beta = function(
 
       if (is.null(beta)) {
         beta = rep(0, length(gradient))
-        epsilon = 10
+        epsilon = Inf
       } else {
         # see glm.control
         epsilon = max(abs(gradient)/(abs(beta) + 0.01))
@@ -671,8 +671,11 @@ estimate_new_beta = function(
       beta_list = list(
         setup = formula_list,
         beta = beta,
+        coefficients = as.numeric(beta),
         previous_gradient = gradient,
         total_sample_size = total_sample_size,
+        num_iterations = iteration_number,
+        max_iterations = max_iterations,
         iteration_number_next = iteration_number +  1,
         tolerance = tolerance,
         epsilon = epsilon,
@@ -683,6 +686,10 @@ estimate_new_beta = function(
         covariance_unscaled = covariance_unscaled,
         dispersion_sum = dispersion_sum,
         df.residual = n_ok - q.r$rank,
+        df.null = n_ok - 1L,
+        deviance = deviance,
+        # null.deviance = null.deviance,
+        aic = aic + 2 * q.r$rank,
         beta_names = beta_names
       )
       readr::write_rds(beta_list, out_beta_file)
