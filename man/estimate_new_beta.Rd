@@ -5,20 +5,9 @@
 \alias{compute_model}
 \title{Estimate the updated beta value}
 \usage{
-estimate_new_beta(
-  model_name,
-  synced_folder,
-  all_site_names = NULL,
-  tolerance = 1e-09
-)
+estimate_new_beta(model_name, synced_folder, all_site_names = NULL)
 
-compute_model(
-  model_name,
-  synced_folder,
-  all_site_names = NULL,
-  tolerance = 1e-09,
-  wait_time = 5
-)
+compute_model(model_name, synced_folder, all_site_names = NULL, wait_time = 5)
 }
 \arguments{
 \item{model_name}{name of your model}
@@ -26,8 +15,6 @@ compute_model(
 \item{synced_folder}{synced folder to do computation}
 
 \item{all_site_names}{all the site names used to fit this model}
-
-\item{tolerance}{tolerance for convergence}
 
 \item{wait_time}{Time, in seconds, to wait until to try to
 get new estimate}
@@ -51,7 +38,8 @@ dir.create(synced_folder)
 model_name = "logistic_example"
 form_file = setup_model(model_name = model_name,
                         synced_folder = synced_folder,
-                        formula =  y ~ x1 + x2, family =  binomial())
+                        formula =  y ~ x1 + x2, family =  binomial(),
+                        tolerance = 5)
 outfile = estimate_site_gradient(
   model_name = model_name, synced_folder = synced_folder,
   all_site_names = "site1",
@@ -65,6 +53,6 @@ outfile = estimate_site_gradient(
   data = data)
 
 estimate_new_beta(model_name, synced_folder,
-all_site_names = "site1", tolerance = 5)
+all_site_names = "site1")
 master_beta_file(model_name, synced_folder)
 }

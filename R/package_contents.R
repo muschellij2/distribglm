@@ -127,6 +127,7 @@ gradient_value = function(beta = NULL, data, formula,
 #' @param all_site_names all the site names to fit this model
 #' @param link link function to use with family
 #' @param max_iterations maximum number of iterations to run
+#' @param tolerance tolerance for convergence
 #'
 #' @return A character path to a formula/model file
 #' @export
@@ -144,7 +145,9 @@ setup_model = function(model_name, synced_folder,
                        family = binomial(),
                        all_site_names = NULL,
                        link = NULL,
-                       max_iterations = 100) {
+                       max_iterations = 100,
+                       tolerance = 1e-9
+                       ) {
   # this structure is the same on all sites
   fols = file.path(synced_folder,
                    c("formulas", "gradients", "models",
@@ -481,7 +484,6 @@ estimate_site_gradient = function(
 #'
 #' @inheritParams clear_model
 #' @param all_site_names all the site names used to fit this model
-#' @param tolerance tolerance for convergence
 #'
 #' @return A file name of the estimated values necessary for
 #' the final estimates
@@ -498,7 +500,8 @@ estimate_site_gradient = function(
 #' model_name = "logistic_example"
 #' form_file = setup_model(model_name = model_name,
 #'                         synced_folder = synced_folder,
-#'                         formula =  y ~ x1 + x2, family =  binomial())
+#'                         formula =  y ~ x1 + x2, family =  binomial(),
+#'                         tolerance = 5)
 #' outfile = estimate_site_gradient(
 #'   model_name = model_name, synced_folder = synced_folder,
 #'   all_site_names = "site1",
@@ -512,12 +515,11 @@ estimate_site_gradient = function(
 #'   data = data)
 #'
 #' estimate_new_beta(model_name, synced_folder,
-#' all_site_names = "site1", tolerance = 5)
+#' all_site_names = "site1")
 #' master_beta_file(model_name, synced_folder)
 estimate_new_beta = function(
   model_name, synced_folder,
-  all_site_names = NULL,
-  tolerance = 1e-9) {
+  all_site_names = NULL) {
 
   stopifnot(length(model_name) == 1)
 
@@ -563,7 +565,10 @@ estimate_new_beta = function(
   if (is.null(max_iterations)) {
     max_iterations = 100
   }
-
+  tolerance = formula_list$tolerance
+  if (is.null(tolerance)) {
+    tolerance = 1e-9
+  }
   if (is.null(all_site_names)) {
     if (!file.exists(formula_file)) {
       stop(paste0("Formula file: ", formula_file, " doesn't exist!",
@@ -623,7 +628,7 @@ estimate_new_beta = function(
         epsilon = 10
       } else {
         # see glm.control
-        epsilon = max(abs(gradient)/(abs(beta) + 0.1))
+        epsilon = max(abs(gradient)/(abs(beta) + 0.01))
       }
       # print(epsilon)
       converged = epsilon < tolerance
@@ -925,7 +930,6 @@ estimate_model = function(
 compute_model = function(
   model_name, synced_folder,
   all_site_names = NULL,
-  tolerance = 1e-9,
   wait_time = 5
 ) {
   final_file = model_output_file(model_name, synced_folder)
@@ -934,8 +938,7 @@ compute_model = function(
     run = estimate_new_beta(
       model_name,
       synced_folder,
-      all_site_names = all_site_names,
-      tolerance = tolerance)
+      all_site_names = all_site_names)
     Sys.sleep(wait_time)
   }
   result = readr::read_rds(final_file)

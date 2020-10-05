@@ -13,7 +13,8 @@ setup_model(
   family = binomial(),
   all_site_names = NULL,
   link = NULL,
-  max_iterations = 100
+  max_iterations = 100,
+  tolerance = 1e-09
 )
 
 make_family(family, link = NULL)
@@ -35,6 +36,8 @@ model with same name) before creating new model}
 \item{link}{link function to use with family}
 
 \item{max_iterations}{maximum number of iterations to run}
+
+\item{tolerance}{tolerance for convergence}
 }
 \value{
 A character path to a formula/model file

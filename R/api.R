@@ -115,6 +115,7 @@ api_model_specification = function(
 #' is submitted to the server, but returned to see what would be submitted.
 #' @param config additional configuration settings such as http
 #' authentication and additional headers.
+#' @param tolerance tolerance for convergence
 #'
 #' @export
 api_submit_gradient = function(
@@ -238,6 +239,7 @@ api_setup_model = function(
   link = "logit",
   all_site_names,
   config = list(),
+  tolerance = 1e-9,
   ...) {
   api_dep_check()
   if (inherits(formula, "formula")) {
@@ -263,6 +265,7 @@ api_setup_model = function(
       formula = formula,
       family = family,
       link = link,
+      tolerance = tolerance,
       all_site_names = all_site_names),
     encode = "json",
     config = config,

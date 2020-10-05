@@ -63,7 +63,8 @@ function(model_name,
          formula = "y ~ x1 + x2",
          family = "binomial",
          all_site_names,
-         link
+         link,
+         tolerance = 1e-9
          # ,
          # ,
          # family = "binomial",
@@ -82,7 +83,8 @@ function(model_name,
                      clear_model = clear_model,
                      formula = formula,
                      family = family,
-                     all_site_names = all_site_names)
+                     all_site_names = all_site_names,
+                     tolerance = tolerance)
   L = list(
     formula = char_formula,
     family = family$family,

@@ -45,6 +45,7 @@ api_setup_model(
   link = "logit",
   all_site_names,
   config = list(),
+  tolerance = 1e-09,
   ...
 )
 
@@ -94,6 +95,8 @@ is submitted to the server, but returned to see what would be submitted.}
 \item{link}{link function to use with family}
 
 \item{all_site_names}{all the site names to fit this model}
+
+\item{tolerance}{tolerance for convergence}
 
 \item{wait_time}{Time, in seconds, to wait until to try to
 get new estimate}
