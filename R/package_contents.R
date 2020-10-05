@@ -520,7 +520,8 @@ estimate_site_gradient = function(
 #' master_beta_file(model_name, synced_folder)
 estimate_new_beta = function(
   model_name, synced_folder,
-  all_site_names = NULL) {
+  all_site_names = NULL,
+  verbose = TRUE) {
 
   stopifnot(length(model_name) == 1)
 
@@ -631,7 +632,10 @@ estimate_new_beta = function(
         # see glm.control
         epsilon = max(abs(gradient)/(abs(beta) + 0.01))
       }
-      # print(epsilon)
+      if (verbose) {
+        message("epsiolon value")
+      }
+      print(epsilon)
       converged = epsilon < tolerance
       if (converged || iteration_number >= max_iterations) {
         if (converged) {
@@ -953,4 +957,35 @@ compute_model = function(
   }
   result = readr::read_rds(final_file)
   return(result)
+}
+
+#' @rdname estimate_new_beta
+#' @export
+model_trace = function(
+  model_name, synced_folder) {
+
+  stopifnot(length(model_name) == 1)
+
+  file_list = folder_names(synced_folder)
+  beta_folder = file_list$beta_folder
+  converged_folder = file_list$converged_folder
+
+
+  final_file = file.path(converged_folder,
+                         paste0(model_name, ".rds"))
+  out_beta_file = file.path(
+    beta_folder,
+    paste0(
+      model_name,
+      sprintf("-iteration%04.0f", 1:1000),
+      ".rds")
+  )
+  out_beta_file = out_beta_file[file.exists(out_beta_file)]
+
+  if (file.exists(final_file)) {
+    out_beta_file = c(out_beta_file, final_file)
+  }
+  names(out_beta_file) = basename(out_beta_file)
+  out = lapply(out_beta_file, readr::read_rds)
+  return(out)
 }

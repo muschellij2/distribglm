@@ -3,11 +3,19 @@
 \name{estimate_new_beta}
 \alias{estimate_new_beta}
 \alias{compute_model}
+\alias{model_trace}
 \title{Estimate the updated beta value}
 \usage{
-estimate_new_beta(model_name, synced_folder, all_site_names = NULL)
+estimate_new_beta(
+  model_name,
+  synced_folder,
+  all_site_names = NULL,
+  verbose = TRUE
+)
 
 compute_model(model_name, synced_folder, all_site_names = NULL, wait_time = 5)
+
+model_trace(model_name, synced_folder)
 }
 \arguments{
 \item{model_name}{name of your model}

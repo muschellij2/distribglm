@@ -221,6 +221,31 @@ function(model_name) {
 }
 
 
+#* Get Model Trace
+#* @param model_name character name of your model
+#* @response A list of values
+#* @get /get_model_trace
+function(model_name) {
+
+  result = model_trace(model_name = model_name,
+              synced_folder = synced_folder)
+
+  result = lapply(result, function(out) {
+    if (inherits(out$setup$formula, "formula")) {
+      out$setup$formula = paste_formula(out$setup$formula)
+    }
+    if (inherits(out$setup$family, "family")) {
+      out$setup$family = paste_family(out$setup$family)
+    }
+    out
+  })
+
+  result = jsonlite::toJSON(result, digits = 20)
+  return(result)
+}
+
+
+
 
 
 
