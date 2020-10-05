@@ -17,4 +17,4 @@ os:
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libssh-dev; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then berw install libssh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libssh; fi
