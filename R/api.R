@@ -295,7 +295,7 @@ api_clear_model = function(model_name,
 #' @rdname api
 #' @param wait_time Time, in seconds, to wait until to try to
 #' get new estimate
-#' @param ... addition alarguments to send to
+#' @param ... additional arguments to send to
 #' \code{\link{api_submit_gradient}}
 #' @export
 api_estimate_model = function(

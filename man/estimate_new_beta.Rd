@@ -33,8 +33,8 @@ compute_model(
 get new estimate}
 }
 \value{
-A filename of the estimated values necessary for
-the final estiamtes.
+A file name of the estimated values necessary for
+the final estimates
 }
 \description{
 Estimate the updated beta value

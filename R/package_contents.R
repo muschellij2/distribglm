@@ -483,8 +483,8 @@ estimate_site_gradient = function(
 #' @param all_site_names all the site names used to fit this model
 #' @param tolerance tolerance for convergence
 #'
-#' @return A filename of the estimated values necessary for
-#' the final estiamtes.
+#' @return A file name of the estimated values necessary for
+#' the final estimates
 #' @export
 #' @examples
 #' data = data.frame(y = c(0, 0, 1),

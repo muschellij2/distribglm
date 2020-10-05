@@ -67,7 +67,7 @@ api_estimate_model(
 \item{config}{additional configuration settings such as http
 authentication and additional headers.}
 
-\item{...}{addition alarguments to send to
+\item{...}{additional arguments to send to
 \code{\link{api_submit_gradient}}}
 
 \item{model_name}{name of your model}
