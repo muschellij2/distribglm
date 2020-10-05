@@ -173,7 +173,8 @@ setup_model = function(model_name, synced_folder,
   L = list(formula = formula,
            family = family,
            model_name = model_name,
-           max_iterations = max_iterations)
+           max_iterations = max_iterations,
+           tolerance = tolerance)
   L$all_site_names = all_site_names
   readr::write_rds(L, formula_file)
   return(formula_file)

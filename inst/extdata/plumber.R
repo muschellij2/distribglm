@@ -92,7 +92,8 @@ function(model_name,
     file = file,
     file_created = file.exists(file),
     model_name = model_name,
-    all_site_names = all_site_names
+    all_site_names = all_site_names,
+    tolerance = tolerance
   )
   return(L)
 }
