@@ -485,7 +485,7 @@ estimate_site_gradient = function(
 #'
 #' @inheritParams clear_model
 #' @param all_site_names all the site names used to fit this model
-#'
+#' @param verbose print diagnostic messages
 #' @return A file name of the estimated values necessary for
 #' the final estimates
 #' @export

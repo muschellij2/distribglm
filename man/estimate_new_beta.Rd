@@ -24,6 +24,8 @@ model_trace(model_name, synced_folder)
 
 \item{all_site_names}{all the site names used to fit this model}
 
+\item{verbose}{print diagnostic messages}
+
 \item{wait_time}{Time, in seconds, to wait until to try to
 get new estimate}
 }
