@@ -70,7 +70,7 @@ function(model_name,
          # family = "binomial",
          # all_site_names,
          # link = NULL
-         ) {
+) {
 
   family = make_family(family = family, link = link)
   char_formula = formula
@@ -228,7 +228,7 @@ function(model_name) {
 function(model_name) {
 
   result = model_trace(model_name = model_name,
-              synced_folder = synced_folder)
+                       synced_folder = synced_folder)
 
   result = lapply(result, function(out) {
     if (inherits(out$setup$formula, "formula")) {
@@ -237,10 +237,11 @@ function(model_name) {
     if (inherits(out$setup$family, "family")) {
       out$setup$family = paste_family(out$setup$family)
     }
+    out = jsonlite::toJSON(out, digits = 20)
     out
   })
 
-  result = jsonlite::toJSON(result, digits = 20)
+  # result = jsonlite::toJSON(result, digits = 20)
   return(result)
 }
 
@@ -307,7 +308,7 @@ function(gradient_list,
          # site_name = NULL,
          # model_name = NULL,
          # iteration_number = NULL
-         ) {
+) {
   if (missing(site_name)) {
     site_name = NULL
   }
