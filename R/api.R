@@ -88,11 +88,14 @@ api_get_model_trace = function(
     config = config,
     ...)
   httr::warn_for_status(b)
-  beta = jsonlite::fromJSON(httr::content(b, as = "text"))
-  if (is.character(beta)) {
+  result = jsonlite::fromJSON(httr::content(b, as = "text"))
+  result = lapply(result, function(beta) {
+    if (is.character(beta)) {
     beta = jsonlite::fromJSON(beta)
-  }
-  return(beta)
+    }
+    beta
+  })
+  return(result)
 }
 
 #' @rdname api
