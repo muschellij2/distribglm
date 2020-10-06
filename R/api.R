@@ -35,7 +35,7 @@ api_available_models = function(
     config = config,
     ...)
   httr::warn_for_status(b)
-  beta = jsonlite::fromJSON(httr::content(b, as = "text"))
+  beta = jsonlite::fromJSON(httr::content(b, as = "text", encoding = "UTF-8"))
   return(beta)
 }
 
@@ -60,7 +60,7 @@ api_get_current_beta = function(
     config = config,
     ...)
   httr::warn_for_status(b)
-  beta = jsonlite::fromJSON(httr::content(b, as = "text"))
+  beta = jsonlite::fromJSON(httr::content(b, as = "text", encoding = "UTF-8"))
   if (is.character(beta)) {
     beta = jsonlite::fromJSON(beta)
   }
@@ -88,7 +88,7 @@ api_model_trace = function(
     config = config,
     ...)
   httr::warn_for_status(b)
-  result = jsonlite::fromJSON(httr::content(b, as = "text"))
+  result = jsonlite::fromJSON(httr::content(b, as = "text", encoding = "UTF-8"))
   result = lapply(result, function(beta) {
     if (is.character(beta)) {
     beta = jsonlite::fromJSON(beta)
@@ -118,7 +118,7 @@ api_model_specification = function(
                        config = config,
                        ...)
   httr::warn_for_status(mod_spec)
-  spec = jsonlite::fromJSON(httr::content(mod_spec, as = "text"))
+  spec = jsonlite::fromJSON(httr::content(mod_spec, as = "text", encoding = "UTF-8"))
   if (is.character(spec)) {
     spec = jsonlite::fromJSON(spec)
   }
@@ -228,7 +228,7 @@ api_submit_gradient = function(
     config = config,
     ...)
   httr::warn_for_status(submitted)
-  submitted = jsonlite::fromJSON(httr::content(submitted, as = "text"))
+  submitted = jsonlite::fromJSON(httr::content(submitted, as = "text", encoding = "UTF-8"))
   return(submitted)
 }
 
@@ -253,7 +253,7 @@ api_model_converged = function(
     config = config,
     ...)
   httr::warn_for_status(b)
-  conv = jsonlite::fromJSON(httr::content(b, as = "text"))
+  conv = jsonlite::fromJSON(httr::content(b, as = "text", encoding = "UTF-8"))
   if (is.character(conv)) {
     conv = jsonlite::fromJSON(conv)
   }
@@ -302,7 +302,7 @@ api_setup_model = function(
     config = config,
     ...)
   httr::warn_for_status(res)
-  model_setup = jsonlite::fromJSON(httr::content(res, as = "text"))
+  model_setup = jsonlite::fromJSON(httr::content(res, as = "text", encoding = "UTF-8"))
   model_setup
 }
 
@@ -322,7 +322,7 @@ api_clear_model = function(model_name,
     ...,
     encode = "json")
   httr::warn_for_status(res)
-  model_setup = jsonlite::fromJSON(httr::content(res, as = "text"))
+  model_setup = jsonlite::fromJSON(httr::content(res, as = "text", encoding = "UTF-8"))
   model_setup
 }
 
