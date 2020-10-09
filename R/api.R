@@ -91,7 +91,7 @@ api_model_trace = function(
   result = jsonlite::fromJSON(httr::content(b, as = "text", encoding = "UTF-8"))
   result = lapply(result, function(beta) {
     if (is.character(beta)) {
-    beta = jsonlite::fromJSON(beta)
+      beta = jsonlite::fromJSON(beta)
     }
     beta
   })
@@ -257,6 +257,10 @@ api_model_converged = function(
   if (is.character(conv)) {
     conv = jsonlite::fromJSON(conv)
   }
+  if (is.null(model$null.deviance)) {
+    model$null.deviance = NA
+  }
+  class(model) = c("glm", "lm")
   conv
 }
 
