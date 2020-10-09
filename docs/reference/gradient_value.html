@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -37,7 +41,6 @@
 
 <meta property="og:title" content="Estimate the update gradient value — gradient_value" />
 <meta property="og:description" content="Estimate the update gradient value" />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -55,7 +58,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -69,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">distribglm</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0.9000</span>
       </span>
     </div>
 
@@ -87,7 +90,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/muschellij2/distribglm">
+  <a href="https://github.com/muschellij2/distribglm/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -120,7 +123,8 @@
   <span class='no'>formula</span>,
   <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>(),
   <span class='kw'>iteration_number</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>shuffle_rows</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  <span class='kw'>shuffle_rows</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>link</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )
 
 <span class='fu'>use_glm_gradient_value</span>(
@@ -160,6 +164,10 @@
       <td><p>should the rows of the dataset be permuted, so
 as to decrease privacy concerns</p></td>
     </tr>
+    <tr>
+      <th>link</th>
+      <td><p>link function to use with family</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -171,14 +179,122 @@ values (for overdispersion estimates), and a vector of values
 for combining to create the population gradient (<code>u</code>), with length
 of the number of beta values</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>),
+<span class='kw'>pois_y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>0</span>),
+<span class='kw'>x2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>2.19021287072066</span>,
+       -<span class='fl'>0.344307138450805</span>, <span class='fl'>3.47215796952745</span>),
+<span class='kw'>x1</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>0.263859503846267</span>,
+       -<span class='fl'>0.985160029707486</span>, <span class='fl'>0.227262373184513</span>))
+<span class='fu'>gradient_value</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>, <span class='kw'>formula</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>x1</span> + <span class='no'>x2</span>,
+<span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"binomial"</span>)</div><div class='output co'>#&gt; $gradient
+#&gt;                   [,1]
+#&gt; (Intercept) -0.3434747
+#&gt; x1           1.4794362
+#&gt; x2           0.5781000
+#&gt; 
+#&gt; $sample_size
+#&gt; [1] 3
+#&gt; 
+#&gt; $iteration_number
+#&gt; [1] 0
+#&gt; 
+#&gt; $A_mat
+#&gt;             (Intercept)         x1        x2
+#&gt; (Intercept)   0.7500000 -0.2554393 0.2344095
+#&gt; x1           -0.2554393  0.2729526 0.4265492
+#&gt; x2            0.2344095  0.4265492 4.2428652
+#&gt; 
+#&gt; $n_ok
+#&gt; [1] 3
+#&gt; 
+#&gt; $dispersion_sum
+#&gt; [1] 3
+#&gt; 
+#&gt; $u
+#&gt;                  [,1]
+#&gt; (Intercept) -0.500000
+#&gt; x1           0.738141
+#&gt; x2           3.003339
+#&gt; 
+#&gt; $deviance
+#&gt; [1] 4.158883
+#&gt; 
+#&gt; $aic
+#&gt; [1] 4.158883
+#&gt; 
+#&gt; $beta_names
+#&gt; [1] "(Intercept)" "x1"          "x2"         
+#&gt; </div><div class='input'><span class='fu'>gradient_value</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>, <span class='kw'>formula</span> <span class='kw'>=</span> <span class='no'>pois_y</span> ~ <span class='no'>x1</span> + <span class='no'>x2</span>,
+<span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"poisson"</span>)</div><div class='output co'>#&gt; $gradient
+#&gt;                   [,1]
+#&gt; (Intercept)  1.5949810
+#&gt; x1           1.9242247
+#&gt; x2          -0.8733142
+#&gt; 
+#&gt; $sample_size
+#&gt; [1] 3
+#&gt; 
+#&gt; $iteration_number
+#&gt; [1] 0
+#&gt; 
+#&gt; $A_mat
+#&gt;             (Intercept)        x1        x2
+#&gt; (Intercept)    3.000000 -1.021757  0.937638
+#&gt; x1            -1.021757  1.091810  1.706197
+#&gt; x2             0.937638  1.706197 16.971461
+#&gt; 
+#&gt; $n_ok
+#&gt; [1] 3
+#&gt; 
+#&gt; $dispersion_sum
+#&gt; [1] 10
+#&gt; 
+#&gt; $u
+#&gt;                   [,1]
+#&gt; (Intercept)   2.000000
+#&gt; x1           -1.018841
+#&gt; x2          -10.042797
+#&gt; 
+#&gt; $deviance
+#&gt; [1] 7.090355
+#&gt; 
+#&gt; $aic
+#&gt; [1] 12.35611
+#&gt; 
+#&gt; $beta_names
+#&gt; [1] "(Intercept)" "x1"          "x2"         
+#&gt; </div><div class='input'><span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>),
+<span class='kw'>pois_y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>0</span>),
+<span class='kw'>x2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>2.19021287072066</span>,
+       -<span class='fl'>0.344307138450805</span>, <span class='fl'>3.47215796952745</span>),
+<span class='kw'>x1</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>0.263859503846267</span>,
+       -<span class='fl'>0.985160029707486</span>, <span class='fl'>0.227262373184513</span>))
+<span class='fu'>use_glm_gradient_value</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>, <span class='kw'>formula</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>x1</span> + <span class='no'>x2</span>,
+<span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>(<span class='kw'>link</span> <span class='kw'>=</span> <span class='st'>"probit"</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: glm.fit: algorithm did not converge</span></div><div class='output co'>#&gt; $gradient
+#&gt; (Intercept)          x1          x2 
+#&gt;  -0.2152408   0.9270991   0.3622704 
+#&gt; 
+#&gt; $sample_size
+#&gt; [1] 3
+#&gt; 
+#&gt; $iteration_number
+#&gt; [1] 0
+#&gt; 
+#&gt; $deviance
+#&gt; [1] 0.6658958
+#&gt; 
+#&gt; $aic
+#&gt; [1] 6.665896
+#&gt; 
+#&gt; $beta_names
+#&gt; [1] "(Intercept)" "x1"          "x2"         
+#&gt; </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -189,7 +305,7 @@ of the number of beta values</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
