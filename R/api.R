@@ -253,15 +253,24 @@ api_model_converged = function(
     config = config,
     ...)
   httr::warn_for_status(b)
-  conv = jsonlite::fromJSON(httr::content(b, as = "text", encoding = "UTF-8"))
-  if (is.character(conv)) {
-    conv = jsonlite::fromJSON(conv)
+  model = jsonlite::fromJSON(httr::content(b, as = "text", encoding = "UTF-8"))
+  if (is.character(model)) {
+    model = jsonlite::fromJSON(model)
   }
   if (is.null(model$null.deviance)) {
     model$null.deviance = NA
   }
   class(model) = c("glm", "lm")
-  conv
+  names(model$coefficients) = model$beta_names
+  model$call = call(
+    "glm",
+    formula = as.formula(model$setup$formula),
+    family = as.symbol(
+      paste0(model$setup$family$family, "(link=\"", model$setup$family$link, "\")")))
+  model$z_value = model$coefficients / sqrt(diag(model$covariance))
+  model$p_value = 2 * pnorm(abs(model$z_value), lower.tail = FALSE)
+
+  model
 }
 
 #' @rdname api
