@@ -26,7 +26,7 @@ Suggests:
     httr,
     jsonlite,
     plumberDeploy,
-    analogsea (>= 0.8.0),
+    analogsea (>= 0.9.0),
     ssh (>= 0.7.0)
 Remotes:
     meztez/plumberDeploy,
