@@ -8,3 +8,4 @@
 ^pkgdown$
 ^\.httr-oauth$
 ^data-raw$
+^\.github$

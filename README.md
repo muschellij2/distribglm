@@ -9,6 +9,7 @@
 status](https://travis-ci.com/muschellij2/distribglm.svg?branch=master)](https://travis-ci.com/muschellij2/distribglm)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/muschellij2/distribglm?branch=master&svg=true)](https://ci.appveyor.com/project/muschellij2/distribglm)
+[![R-CMD-check](https://github.com/muschellij2/distribglm/workflows/R-CMD-check/badge.svg)](https://github.com/muschellij2/distribglm/actions)
 <!-- badges: end -->
 
 The goal of `distribglm` is to provide an example of a Distributed
@@ -47,8 +48,8 @@ needs to be specified in the document. This can be something like
 specify the `synced_folder` path. Though this folder is synced across
 the sites and the computing site, it may be located on different
 sub-folders on each computer. For example
-`~/Dropbox/Projects/distributed_model`, `C:/My
-Documents/distributed_model`, etc.
+`~/Dropbox/Projects/distributed_model`,
+`C:/My Documents/distributed_model`, etc.
 
 Additionally, the site may need to specify `all_site_names`, which is
 the names of all the other sites that are computing this model as well.
@@ -85,17 +86,14 @@ Currently, the process that happens is as follows:
 1.  The data is read into `R`. The model design matrix `X` is created
 2.  Current β estimates are pulled for the specified model. If no
     estimates exist, β is initialized to a vector of zeros.
-3.  `Xβ` is computed, which is \(\hat{y}\), and
-    \(\hat{varepsilon} = y - \hat{y}\). Then
-    \(\hat{\delta} = X\hat{varepsilon}\) is created and \(\bar{\delta}\)
-    is used as the vector of gradients to update \(\beta\)\`. Each site
-    returns \(\hat{\delta}\) and the sample size at that site so that
-    they can be combined to \(\bar{\delta}\).
-4.  The compute site gathers the \(\hat{\delta}\) and the sample sizes,
-    and computes \(\bar{\delta}\), and then writes the updated
-    \(\beta\).  
-5.  The compute site checks to see if \(\bar{\delta}\) is below some
-    tolerance level to determine convergence.
+3.  `Xβ` is computed, which is *ŷ*, and *ε̂* = *y* − *ŷ*. Then
+    *δ̂* = *X**ε̂* is created and *δ̄* is used as the vector of gradients
+    to update *β*\`. Each site returns *δ̂* and the sample size at that
+    site so that they can be combined to *δ̄*.
+4.  The compute site gathers the *δ̂* and the sample sizes, and computes
+    *δ̄*, and then writes the updated *β*.  
+5.  The compute site checks to see if *δ̄* is below some tolerance level
+    to determine convergence.
 
 # TODO
 
