@@ -1,12 +1,3 @@
-install_github_r_package = function(droplet, repo) {
-  for (irepo in repo) {
-    analogsea::droplet_ssh(
-      droplet,
-      sprintf("Rscript -e \"remotes::install_github('%s')\"",
-              repo))
-  }
-}
-
 deploy_check = function() {
   if (!requireNamespace("analogsea", quietly = TRUE) ||
       !requireNamespace("plumberDeploy", quietly = TRUE)) {
@@ -14,7 +5,7 @@ deploy_check = function() {
   }
 }
 
-droplet_capture = function(droplet, command) {
+droplet_capture = function(droplet, command, ...) {
   tf <- tempdir()
   randName <- paste(sample(c(letters, LETTERS), size = 10,
                            replace = TRUE), collapse = "")
@@ -25,11 +16,11 @@ droplet_capture = function(droplet, command) {
     }
   })
   analogsea::droplet_ssh(droplet, paste0(command, " > /tmp/",
-                                         randName), verbose = FALSE)
+                                         randName), verbose = FALSE, ...)
   analogsea::droplet_download(droplet, paste0("/tmp/", randName),
-                              tf, verbose = FALSE)
+                              tf, verbose = FALSE, ...)
   analogsea::droplet_ssh(droplet, paste0("rm /tmp/", randName),
-                         verbose = FALSE)
+                         verbose = FALSE, ...)
 
   have_remotes <- readLines(tff, warn = FALSE)
   return(have_remotes)
@@ -68,10 +59,11 @@ droplet_capture = function(droplet, command) {
 #' } else {
 #'   droplet = d[[1]]
 #' }
-#' droplet = do_provision_glm_api(droplet = droplet)
+#' droplet = do_provision_glm_api(droplet = droplet, region = "sfo3")
 #' droplet = do_deploy_glm_api_only(droplet)
 #' ip = analogsea:::droplet_ip(droplet)
-#' applet_url = paste0("http://", ip, "/", droplet$application_name)
+#' applet_url = paste0("http://", ip, "/", droplet$application_name,
+#' "/__docs__/")
 #' if (interactive()) {
 #'     browseURL(applet_url)
 #' }
@@ -89,8 +81,25 @@ do_provision_glm_api = function(
     stop("You chose to load the example, but also use port ",
          "8000, this will cause failures, please change port")
   }
-  droplet <- plumberDeploy::do_provision(..., example = example)
-  analogsea::install_r_package(droplet, c("readr", "remotes"))
+  args = list(...)
+  # these args are generally for droplet_ssh
+  ssh_args = list(
+    user = args$user %||% "root",
+    keyfile = args$keyfile,
+    ssh_passwd = args$ssh_passwd,
+    verbose = args$verbose %||% FALSE
+  )
+  # these don't get passed to analogsea::droplet_create for now
+  # with > 0.3
+  # args$user = args$keyfile = args$ssh_passwd = args$verbose =  NULL
+
+  args$example = example
+  droplet <- do.call(plumberDeploy::do_provision, args = args)
+
+  ssh_args$droplet = droplet
+  ssh_args$package = c("readr", "remotes")
+  do.call(analogsea::install_r_package,args = ssh_args)
+  ssh_args$package = NULL
 
   droplet_apt_install = function(droplet, pack, update = TRUE) {
     cmd = ""
@@ -99,27 +108,40 @@ do_provision_glm_api = function(
     }
     cmd = sprintf(paste0(cmd, " sudo apt-get install -y %s "),
                   pack)
-    analogsea::droplet_ssh(droplet,cmd)
+    run_args = c(cmd, ssh_args)
+    do.call(analogsea::droplet_ssh, args = run_args)
+    # analogsea::droplet_ssh(droplet,cmd)
   }
   droplet_apt_install(droplet, "libcurl4-openssl-dev")
   droplet_apt_install(droplet, "libssh-dev")
 
   droplet_apt_install(droplet, "libssl-dev", update = FALSE)
-  analogsea::install_r_package(
-    droplet,
-    unique(c("httr", "jsonlite", r_packages)))
 
+  # analogsea::install_r_package(
+  #   droplet,
+  #   unique(c("httr", "jsonlite", r_packages)))
+  ssh_args$package = unique(c("httr", "jsonlite"), r_packages)
+  do.call(
+    analogsea::install_r_package,
+    args = ssh_args)
+  ssh_args$package = NULL
 
   droplet_ls = function(droplet, path) {
-    analogsea::droplet_ssh(
-      droplet,
-      sprintf("ls %s", path))
+    run_args = c(ssh_args, sprintf("ls %s", path))
+    do.call(analogsea::droplet_ssh, args = run_args)
+    # analogsea::droplet_ssh(
+    #   droplet,
+    #   sprintf("ls %s", path))
   }
 
-
-  install_github_r_package(
-    droplet,
-    unique(c("muschellij2/distribglm", github_r_packages)))
+  ssh_args$package = unique(c("muschellij2/distribglm", github_r_packages))
+  do.call(
+    analogsea::install_github_r_package,
+    args = ssh_args)
+  ssh_args$package = NULL
+  # install_github_r_package(
+  #   droplet,
+  #   unique(c("muschellij2/distribglm", github_r_packages)))
 
   droplet$application_name = application_name
   droplet
@@ -129,35 +151,42 @@ do_provision_glm_api = function(
 #' @rdname deploy
 do_remove_glm_api = function(
   droplet,
-  application_name = "glm") {
+  application_name = "glm",
+  ...) {
 
   deploy_check()
 
   analogsea::droplet_ssh(
     droplet,
     paste("rm -rf",
-          paste0("/var/plumber/", application_name, "/*")))
+          paste0("/var/plumber/", application_name, "/*")),
+    ...)
 
   app_name = paste0("plumber-", application_name)
   analogsea::droplet_ssh(
     droplet,
-    sprintf("(systemctl stop %s || true) && sleep 1", app_name))
+    sprintf("(systemctl stop %s || true) && sleep 1", app_name),
+    ...)
   analogsea::droplet_ssh(
     droplet,
-    sprintf("(systemctl disable %s || true) && sleep 1", app_name))
+    sprintf("(systemctl disable %s || true) && sleep 1", app_name),
+    ...)
 
 
   analogsea::droplet_ssh(
     droplet,
     paste("rm -rf",
           paste0("/etc/systemd/system/",
-                 app_name, ".service")))
+                 app_name, ".service")),
+    ...)
   analogsea::droplet_ssh(
     droplet,
     paste("rm -rf",
           paste0("/etc/nginx/sites-available/plumber-apis/",
-                 application_name, ".conf")))
-  analogsea::droplet_ssh(droplet, "systemctl reload nginx")
+                 application_name, ".conf")),
+    ...)
+  analogsea::droplet_ssh(droplet, "systemctl reload nginx",
+                         ...)
   return(droplet)
 }
 
@@ -198,10 +227,11 @@ do_deploy_glm_api_only = function(
   application_name = "glm",
   port = 8000,
   docs = TRUE,
-  forward = TRUE) {
+  forward = TRUE,
+  ...) {
   deploy_check()
 
-  install_github_r_package(droplet, "muschellij2/distribglm")
+  analogsea::install_github_r_package(droplet, "muschellij2/distribglm", ...)
 
   local_file = system.file("extdata/plumber.R",
                            package = "distribglm")
@@ -213,7 +243,7 @@ do_deploy_glm_api_only = function(
 
   try({
     plumberDeploy::do_remove_api(droplet, path = application_name,
-                               delete = TRUE)
+                                 delete = TRUE, ...)
   }, silent = TRUE)
   res = plumberDeploy::do_deploy_api(
     droplet,
@@ -221,7 +251,7 @@ do_deploy_glm_api_only = function(
     localPath = tdir,
     port = port,
     docs = docs,
-    forward = forward)
+    forward = forward, ...)
   res$application_name = application_name
   res$port = port
   res$docs = docs
@@ -231,10 +261,10 @@ do_deploy_glm_api_only = function(
 
 #' @export
 #' @rdname deploy
-do_list_plumber = function(droplet) {
+do_list_plumber = function(droplet, ...) {
 
   deploy_check()
-  out = droplet_capture(droplet, "systemctl | grep plumber")
+  out = droplet_capture(droplet, "systemctl | grep plumber", ...)
   return(out)
 
 }

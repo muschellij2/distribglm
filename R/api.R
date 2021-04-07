@@ -149,6 +149,10 @@ api_model_specification = function(
 #' @param tolerance tolerance for convergence
 #'
 #' @export
+#' @examples
+#' api_url()
+#' api_set_url(api_url())
+#' api_available_models()
 api_submit_gradient = function(
   model_name,
   url = api_url(),
@@ -268,7 +272,7 @@ api_model_converged = function(
     family = as.symbol(
       paste0(model$setup$family$family, "(link=\"", model$setup$family$link, "\")")))
   model$z_value = model$coefficients / sqrt(diag(model$covariance))
-  model$p_value = 2 * pnorm(abs(model$z_value), lower.tail = FALSE)
+  model$p_value = 2 * stats::pnorm(abs(model$z_value), lower.tail = FALSE)
 
   model
 }

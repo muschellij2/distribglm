@@ -107,3 +107,8 @@ get new estimate}
 \description{
 API Functions and wrappers
 }
+\examples{
+api_url()
+api_set_url(api_url())
+api_available_models()
+}

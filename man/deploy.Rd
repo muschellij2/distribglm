@@ -17,7 +17,7 @@ do_provision_glm_api(
   github_r_packages = NULL
 )
 
-do_remove_glm_api(droplet, application_name = "glm")
+do_remove_glm_api(droplet, application_name = "glm", ...)
 
 do_deploy_glm_api(
   ...,
@@ -33,10 +33,11 @@ do_deploy_glm_api_only(
   application_name = "glm",
   port = 8000,
   docs = TRUE,
-  forward = TRUE
+  forward = TRUE,
+  ...
 )
 
-do_list_plumber(droplet)
+do_list_plumber(droplet, ...)
 }
 \arguments{
 \item{...}{arguments to pass to \code{do_provision} from
@@ -81,10 +82,11 @@ if (length(d) == 0) {
 } else {
   droplet = d[[1]]
 }
-droplet = do_provision_glm_api(droplet = droplet)
+droplet = do_provision_glm_api(droplet = droplet, region = "sfo3")
 droplet = do_deploy_glm_api_only(droplet)
 ip = analogsea:::droplet_ip(droplet)
-applet_url = paste0("http://", ip, "/", droplet$application_name)
+applet_url = paste0("http://", ip, "/", droplet$application_name,
+"/__docs__/")
 if (interactive()) {
     browseURL(applet_url)
 }
