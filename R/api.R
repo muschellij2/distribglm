@@ -12,6 +12,11 @@ api_url = function(url = NULL) {
     url = getOption("distribglm_url")
   }
   if (is.null(url)) {
+    url = Sys.getenv("DISTRIBGLM_URL", unset = NA)
+    if (is.na(url)) url = NULL
+  }
+
+  if (is.null(url)) {
     url = "https://rsconnect.biostat.jhsph.edu/distribglm"
   }
   return(url)
@@ -24,16 +29,26 @@ api_set_url = function(url) {
   return(url)
 }
 
+httr_no_check_ssl = function(expr) {
+  httr::with_config(
+    httr::config(ssl_verifypeer = FALSE),
+    expr
+  )
+}
+
 #' @rdname api
 #' @export
 api_available_models = function(
   url = api_url(),
   config = list(),
   ...) {
-  b = httr::GET(
-    paste0(url, "/available_models"),
-    config = config,
-    ...)
+
+  b = httr_no_check_ssl({
+    httr::GET(
+      paste0(url, "/available_models"),
+      config = config,
+      ...)
+  })
   httr::warn_for_status(b)
   beta = jsonlite::fromJSON(httr::content(b, as = "text", encoding = "UTF-8"))
   return(beta)
@@ -53,12 +68,14 @@ api_get_current_beta = function(
                                       ...)
   }
   stopifnot(length(model_name) == 1)
-  b = httr::GET(
-    paste0(url, "/get_current_beta"),
-    query = list(
-      model_name = model_name),
-    config = config,
-    ...)
+  b = httr_no_check_ssl({
+    httr::GET(
+      paste0(url, "/get_current_beta"),
+      query = list(
+        model_name = model_name),
+      config = config,
+      ...)
+  })
   httr::warn_for_status(b)
   beta = jsonlite::fromJSON(httr::content(b, as = "text", encoding = "UTF-8"))
   if (is.character(beta)) {
@@ -81,12 +98,14 @@ api_model_trace = function(
                                       ...)
   }
   stopifnot(length(model_name) == 1)
-  b = httr::GET(
-    paste0(url, "/model_trace"),
-    query = list(
-      model_name = model_name),
-    config = config,
-    ...)
+  b = httr_no_check_ssl({
+    httr::GET(
+      paste0(url, "/model_trace"),
+      query = list(
+        model_name = model_name),
+      config = config,
+      ...)
+  })
   httr::warn_for_status(b)
   result = jsonlite::fromJSON(httr::content(b, as = "text", encoding = "UTF-8"))
   result = lapply(result, function(beta) {
@@ -111,12 +130,14 @@ api_model_specification = function(
   }
   stopifnot(length(model_name) == 1)
   # check at the compute or data site
-  mod_spec = httr::GET(paste0(url, "/model_specification"),
-                       query = list(
-                         model_name = model_name),
-                       encode = "json",
-                       config = config,
-                       ...)
+  mod_spec = httr_no_check_ssl({
+    httr::GET(paste0(url, "/model_specification"),
+              query = list(
+                model_name = model_name),
+              encode = "json",
+              config = config,
+              ...)
+  })
   httr::warn_for_status(mod_spec)
   spec = jsonlite::fromJSON(httr::content(mod_spec, as = "text", encoding = "UTF-8"))
   if (is.character(spec)) {
@@ -222,15 +243,17 @@ api_submit_gradient = function(
   body = jsonlite::toJSON(body, digits = 20)
 
   # submit a gradient
-  submitted = httr::PUT(
-    paste0(url, "/submit_gradient_list"),
-    # body = list(gradient_list = grad,
-    #             site_name = "Brian",
-    #             model_name = model_name),
-    body = body,
-    encode = "json",
-    config = config,
-    ...)
+  submitted = httr_no_check_ssl({
+    httr::PUT(
+      paste0(url, "/submit_gradient_list"),
+      # body = list(gradient_list = grad,
+      #             site_name = "Brian",
+      #             model_name = model_name),
+      body = body,
+      encode = "json",
+      config = config,
+      ...)
+  })
   httr::warn_for_status(submitted)
   submitted = jsonlite::fromJSON(httr::content(submitted, as = "text", encoding = "UTF-8"))
   return(submitted)
@@ -250,12 +273,14 @@ api_model_converged = function(
                                       ...)
   }
   stopifnot(length(model_name) == 1)
-  b = httr::GET(
-    paste0(url, "/model_converged"),
-    query = list(
-      model_name = model_name),
-    config = config,
-    ...)
+  b = httr_no_check_ssl({
+    httr::GET(
+      paste0(url, "/model_converged"),
+      query = list(
+        model_name = model_name),
+      config = config,
+      ...)
+  })
   httr::warn_for_status(b)
   model = jsonlite::fromJSON(httr::content(b, as = "text", encoding = "UTF-8"))
   if (is.character(model)) {
@@ -306,18 +331,20 @@ api_setup_model = function(
                                       ...)
   }
   stopifnot(length(model_name) == 1)
-  res = httr::PUT(
-    paste0(url, "/setup_model"),
-    body = list(
-      model_name = model_name,
-      formula = formula,
-      family = family,
-      link = link,
-      tolerance = tolerance,
-      all_site_names = all_site_names),
-    encode = "json",
-    config = config,
-    ...)
+  res =httr_no_check_ssl({
+    httr::PUT(
+      paste0(url, "/setup_model"),
+      body = list(
+        model_name = model_name,
+        formula = formula,
+        family = family,
+        link = link,
+        tolerance = tolerance,
+        all_site_names = all_site_names),
+      encode = "json",
+      config = config,
+      ...)
+  })
   httr::warn_for_status(res)
   model_setup = jsonlite::fromJSON(httr::content(res, as = "text", encoding = "UTF-8"))
   model_setup
@@ -331,13 +358,15 @@ api_clear_model = function(model_name,
                            ...) {
   api_dep_check()
   stopifnot(length(model_name) == 1)
-  res = httr::PUT(
-    paste0(url, "/clear_model"),
-    body = list(
-      model_name = model_name),
-    config = config,
-    ...,
-    encode = "json")
+  res = httr_no_check_ssl({
+    httr::PUT(
+      paste0(url, "/clear_model"),
+      body = list(
+        model_name = model_name),
+      config = config,
+      ...,
+      encode = "json")
+  })
   httr::warn_for_status(res)
   model_setup = jsonlite::fromJSON(httr::content(res, as = "text", encoding = "UTF-8"))
   model_setup
