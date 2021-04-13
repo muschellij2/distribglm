@@ -28,6 +28,3 @@ Suggests:
     plumberDeploy,
     analogsea (>= 0.9.0),
     ssh (>= 0.7.0)
-Remotes:
-    meztez/plumberDeploy,
-    sckott/analogsea

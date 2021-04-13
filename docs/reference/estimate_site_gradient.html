@@ -80,18 +80,21 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/muschellij2/distribglm/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -117,27 +120,27 @@
     <p>Estimate Site Gradient</p>
     </div>
 
-    <pre class="usage"><span class='fu'>estimate_site_gradient</span>(
-  <span class='no'>model_name</span>,
-  <span class='no'>synced_folder</span>,
-  <span class='kw'>site_name</span> <span class='kw'>=</span> <span class='st'>"site1"</span>,
-  <span class='no'>data</span>,
-  <span class='kw'>all_site_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>shuffle_rows</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>experimental</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)
+    <pre class="usage"><span class='fu'>estimate_site_gradient</span><span class='op'>(</span>
+  <span class='va'>model_name</span>,
+  <span class='va'>synced_folder</span>,
+  site_name <span class='op'>=</span> <span class='st'>"site1"</span>,
+  <span class='va'>data</span>,
+  all_site_names <span class='op'>=</span> <span class='cn'>NULL</span>,
+  shuffle_rows <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  experimental <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
 
-<span class='fu'>estimate_model</span>(
-  <span class='no'>model_name</span>,
-  <span class='no'>synced_folder</span>,
-  <span class='kw'>site_name</span> <span class='kw'>=</span> <span class='st'>"site1"</span>,
-  <span class='no'>data</span>,
-  <span class='kw'>all_site_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>shuffle_rows</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>wait_time</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>run_compute</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>experimental</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
+<span class='fu'>estimate_model</span><span class='op'>(</span>
+  <span class='va'>model_name</span>,
+  <span class='va'>synced_folder</span>,
+  site_name <span class='op'>=</span> <span class='st'>"site1"</span>,
+  <span class='va'>data</span>,
+  all_site_names <span class='op'>=</span> <span class='cn'>NULL</span>,
+  shuffle_rows <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  wait_time <span class='op'>=</span> <span class='fl'>1</span>,
+  run_compute <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  experimental <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -192,22 +195,23 @@ This allows all sites to be a potential computation site.</p></td>
 output from <code><a href='gradient_value.html'>gradient_value</a></code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>),
-                  <span class='kw'>pois_y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>0</span>),
-                  <span class='kw'>x2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>2.19021287072066</span>,
-                         -<span class='fl'>0.344307138450805</span>, <span class='fl'>3.47215796952745</span>),
-                  <span class='kw'>x1</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>0.263859503846267</span>,
-                         -<span class='fl'>0.985160029707486</span>, <span class='fl'>0.227262373184513</span>))
-<span class='no'>tdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
-<span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span>(<span class='no'>tdir</span>)
-<span class='no'>model_name</span> <span class='kw'>=</span> <span class='st'>"logistic_example"</span>
-<span class='no'>form_file</span> <span class='kw'>=</span> <span class='fu'><a href='setup_model.html'>setup_model</a></span>(<span class='kw'>model_name</span> <span class='kw'>=</span> <span class='no'>model_name</span>,
-                        <span class='kw'>synced_folder</span> <span class='kw'>=</span> <span class='no'>tdir</span>,
-                        <span class='kw'>formula</span> <span class='kw'>=</span>  <span class='st'>"y ~ x1 + x2"</span>, <span class='kw'>family</span> <span class='kw'>=</span>  <span class='st'>"binomial"</span>)
-<span class='no'>outfile</span> <span class='kw'>=</span> <span class='fu'>estimate_site_gradient</span>(
-  <span class='kw'>model_name</span> <span class='kw'>=</span> <span class='no'>model_name</span>, <span class='kw'>synced_folder</span> <span class='kw'>=</span> <span class='no'>tdir</span>,
-  <span class='kw'>all_site_names</span> <span class='kw'>=</span> <span class='st'>"site1"</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>)</div><div class='output co'>#&gt; [1] "Writing Gradient, iteration 1"
+    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
+                  pois_y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
+                  x2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>2.19021287072066</span>,
+                         <span class='op'>-</span><span class='fl'>0.344307138450805</span>, <span class='fl'>3.47215796952745</span><span class='op'>)</span>,
+                  x1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.263859503846267</span>,
+                         <span class='op'>-</span><span class='fl'>0.985160029707486</span>, <span class='fl'>0.227262373184513</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>tdir</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span><span class='op'>(</span><span class='va'>tdir</span><span class='op'>)</span>
+<span class='va'>model_name</span> <span class='op'>=</span> <span class='st'>"logistic_example"</span>
+<span class='va'>form_file</span> <span class='op'>=</span> <span class='fu'><a href='setup_model.html'>setup_model</a></span><span class='op'>(</span>model_name <span class='op'>=</span> <span class='va'>model_name</span>,
+                        synced_folder <span class='op'>=</span> <span class='va'>tdir</span>,
+                        formula <span class='op'>=</span>  <span class='st'>"y ~ x1 + x2"</span>, family <span class='op'>=</span>  <span class='st'>"binomial"</span><span class='op'>)</span>
+<span class='va'>outfile</span> <span class='op'>=</span> <span class='fu'>estimate_site_gradient</span><span class='op'>(</span>
+  model_name <span class='op'>=</span> <span class='va'>model_name</span>, synced_folder <span class='op'>=</span> <span class='va'>tdir</span>,
+  all_site_names <span class='op'>=</span> <span class='st'>"site1"</span>,
+  data <span class='op'>=</span> <span class='va'>data</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "Writing Gradient, iteration 1"
 #&gt; $gradient
 #&gt;                   [,1]
 #&gt; (Intercept) -0.3434747
@@ -246,13 +250,14 @@ output from <code><a href='gradient_value.html'>gradient_value</a></code></p>
 #&gt; 
 #&gt; $beta_names
 #&gt; [1] "(Intercept)" "x1"          "x2"         
-#&gt; </div><div class='input'><span class='fu'><a href='clear_model.html'>clear_model</a></span>(<span class='no'>model_name</span>, <span class='no'>tdir</span>)
-<span class='kw pkg'>testthat</span><span class='kw ns'>::</span><span class='fu'><a href='https://testthat.r-lib.org/reference/expect_error.html'>expect_error</a></span>({
-<span class='no'>outfile</span> <span class='kw'>=</span> <span class='fu'>estimate_site_gradient</span>(
-  <span class='kw'>model_name</span> <span class='kw'>=</span> <span class='no'>model_name</span>, <span class='kw'>synced_folder</span> <span class='kw'>=</span> <span class='no'>tdir</span>,
-  <span class='kw'>all_site_names</span> <span class='kw'>=</span> <span class='st'>"site1"</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>)
-})</div></pre>
+#&gt; </div><div class='input'><span class='fu'><a href='clear_model.html'>clear_model</a></span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>tdir</span><span class='op'>)</span>
+<span class='fu'>testthat</span><span class='fu'>::</span><span class='fu'><a href='https://testthat.r-lib.org/reference/expect_error.html'>expect_error</a></span><span class='op'>(</span><span class='op'>{</span>
+<span class='va'>outfile</span> <span class='op'>=</span> <span class='fu'>estimate_site_gradient</span><span class='op'>(</span>
+  model_name <span class='op'>=</span> <span class='va'>model_name</span>, synced_folder <span class='op'>=</span> <span class='va'>tdir</span>,
+  all_site_names <span class='op'>=</span> <span class='st'>"site1"</span>,
+  data <span class='op'>=</span> <span class='va'>data</span><span class='op'>)</span>
+<span class='op'>}</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -268,7 +273,7 @@ output from <code><a href='gradient_value.html'>gradient_value</a></code></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -95,7 +95,7 @@ Currently, the process that happens is as follows:
 5.  The compute site checks to see if *δ̄* is below some tolerance level
     to determine convergence.
 
-# FIXME issues
+# Outstanding issues
 
 1.  Standard errors
 2.  Better diagnostics

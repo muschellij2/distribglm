@@ -70,7 +70,7 @@ Currently, the process that happens is as follows:
 4.  The compute site gathers the $\hat{\delta}$ and the sample sizes, and computes $\bar{\delta}$, and then writes the updated $\beta$.  
 5.  The compute site checks to see if $\bar{\delta}$ is below some tolerance level to determine convergence.
 
-# FIXME issues
+# Outstanding issues
 
 1.  Standard errors
 2.  Better diagnostics

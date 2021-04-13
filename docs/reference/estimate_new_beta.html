@@ -80,18 +80,21 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/muschellij2/distribglm/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -117,16 +120,16 @@
     <p>Estimate the updated beta value</p>
     </div>
 
-    <pre class="usage"><span class='fu'>estimate_new_beta</span>(
-  <span class='no'>model_name</span>,
-  <span class='no'>synced_folder</span>,
-  <span class='kw'>all_site_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
+    <pre class="usage"><span class='fu'>estimate_new_beta</span><span class='op'>(</span>
+  <span class='va'>model_name</span>,
+  <span class='va'>synced_folder</span>,
+  all_site_names <span class='op'>=</span> <span class='cn'>NULL</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 
-<span class='fu'>compute_model</span>(<span class='no'>model_name</span>, <span class='no'>synced_folder</span>, <span class='kw'>all_site_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>wait_time</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+<span class='fu'>compute_model</span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span>, all_site_names <span class='op'>=</span> <span class='cn'>NULL</span>, wait_time <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
 
-<span class='fu'>model_trace</span>(<span class='no'>model_name</span>, <span class='no'>synced_folder</span>)</pre>
+<span class='fu'>model_trace</span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -160,23 +163,24 @@ get new estimate</p></td>
 the final estimates</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>),
-                  <span class='kw'>pois_y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>0</span>),
-                  <span class='kw'>x2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>2.19021287072066</span>,
-                         -<span class='fl'>0.344307138450805</span>, <span class='fl'>3.47215796952745</span>),
-                  <span class='kw'>x1</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>0.263859503846267</span>,
-                         -<span class='fl'>0.985160029707486</span>, <span class='fl'>0.227262373184513</span>))
-<span class='no'>synced_folder</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
-<span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span>(<span class='no'>synced_folder</span>)
-<span class='no'>model_name</span> <span class='kw'>=</span> <span class='st'>"logistic_example"</span>
-<span class='no'>form_file</span> <span class='kw'>=</span> <span class='fu'><a href='setup_model.html'>setup_model</a></span>(<span class='kw'>model_name</span> <span class='kw'>=</span> <span class='no'>model_name</span>,
-                        <span class='kw'>synced_folder</span> <span class='kw'>=</span> <span class='no'>synced_folder</span>,
-                        <span class='kw'>formula</span> <span class='kw'>=</span>  <span class='no'>y</span> ~ <span class='no'>x1</span> + <span class='no'>x2</span>, <span class='kw'>family</span> <span class='kw'>=</span>  <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>(),
-                        <span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>5</span>)
-<span class='no'>outfile</span> <span class='kw'>=</span> <span class='fu'><a href='estimate_site_gradient.html'>estimate_site_gradient</a></span>(
-  <span class='kw'>model_name</span> <span class='kw'>=</span> <span class='no'>model_name</span>, <span class='kw'>synced_folder</span> <span class='kw'>=</span> <span class='no'>synced_folder</span>,
-  <span class='kw'>all_site_names</span> <span class='kw'>=</span> <span class='st'>"site1"</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>)</div><div class='output co'>#&gt; [1] "Writing Gradient, iteration 1"
+    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
+                  pois_y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
+                  x2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>2.19021287072066</span>,
+                         <span class='op'>-</span><span class='fl'>0.344307138450805</span>, <span class='fl'>3.47215796952745</span><span class='op'>)</span>,
+                  x1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.263859503846267</span>,
+                         <span class='op'>-</span><span class='fl'>0.985160029707486</span>, <span class='fl'>0.227262373184513</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>synced_folder</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span><span class='op'>(</span><span class='va'>synced_folder</span><span class='op'>)</span>
+<span class='va'>model_name</span> <span class='op'>=</span> <span class='st'>"logistic_example"</span>
+<span class='va'>form_file</span> <span class='op'>=</span> <span class='fu'><a href='setup_model.html'>setup_model</a></span><span class='op'>(</span>model_name <span class='op'>=</span> <span class='va'>model_name</span>,
+                        synced_folder <span class='op'>=</span> <span class='va'>synced_folder</span>,
+                        formula <span class='op'>=</span>  <span class='va'>y</span> <span class='op'>~</span> <span class='va'>x1</span> <span class='op'>+</span> <span class='va'>x2</span>, family <span class='op'>=</span>  <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span><span class='op'>(</span><span class='op'>)</span>,
+                        tolerance <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
+<span class='va'>outfile</span> <span class='op'>=</span> <span class='fu'><a href='estimate_site_gradient.html'>estimate_site_gradient</a></span><span class='op'>(</span>
+  model_name <span class='op'>=</span> <span class='va'>model_name</span>, synced_folder <span class='op'>=</span> <span class='va'>synced_folder</span>,
+  all_site_names <span class='op'>=</span> <span class='st'>"site1"</span>,
+  data <span class='op'>=</span> <span class='va'>data</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "Writing Gradient, iteration 1"
 #&gt; $gradient
 #&gt;                   [,1]
 #&gt; (Intercept) -0.3434747
@@ -215,11 +219,14 @@ the final estimates</p>
 #&gt; 
 #&gt; $beta_names
 #&gt; [1] "(Intercept)" "x1"          "x2"         
-#&gt; </div><div class='input'><span class='fu'>estimate_new_beta</span>(<span class='no'>model_name</span>, <span class='no'>synced_folder</span>,
-<span class='kw'>all_site_names</span> <span class='kw'>=</span> <span class='st'>"site1"</span>)</div><div class='output co'>#&gt; [1] "Reading in gradients, iteration 1"</div><div class='output co'>#&gt; <span class='message'>epsiolon value</span></div><div class='output co'>#&gt; [1] Inf</div><div class='output co'>#&gt; [1] "/var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpOqsHwq/file129746467535e/betas/logistic_example-iteration0001.rds"</div><div class='input'><span class='fu'><a href='clear_model.html'>master_beta_file</a></span>(<span class='no'>model_name</span>, <span class='no'>synced_folder</span>)</div><div class='output co'>#&gt; [1] "/var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpOqsHwq/file129746467535e/betas/logistic_example-iteration0002.rds"</div><div class='input'><span class='no'>outfile</span> <span class='kw'>=</span> <span class='fu'><a href='estimate_site_gradient.html'>estimate_site_gradient</a></span>(
-  <span class='kw'>model_name</span> <span class='kw'>=</span> <span class='no'>model_name</span>, <span class='kw'>synced_folder</span> <span class='kw'>=</span> <span class='no'>synced_folder</span>,
-  <span class='kw'>all_site_names</span> <span class='kw'>=</span> <span class='st'>"site1"</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>)</div><div class='output co'>#&gt; [1] "Writing Gradient, iteration 2"
+#&gt; </div><div class='input'><span class='fu'>estimate_new_beta</span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span>,
+all_site_names <span class='op'>=</span> <span class='st'>"site1"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "Reading in gradients, iteration 1"</div><div class='output co'>#&gt; <span class='message'>epsiolon value</span></div><div class='output co'>#&gt; [1] Inf</div><div class='output co'>#&gt; [1] "/var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//Rtmp0c22Xf/file9579329d14ff/betas/logistic_example-iteration0001.rds"</div><div class='input'><span class='fu'><a href='clear_model.html'>master_beta_file</a></span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "/var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//Rtmp0c22Xf/file9579329d14ff/betas/logistic_example-iteration0002.rds"</div><div class='input'><span class='va'>outfile</span> <span class='op'>=</span> <span class='fu'><a href='estimate_site_gradient.html'>estimate_site_gradient</a></span><span class='op'>(</span>
+  model_name <span class='op'>=</span> <span class='va'>model_name</span>, synced_folder <span class='op'>=</span> <span class='va'>synced_folder</span>,
+  all_site_names <span class='op'>=</span> <span class='st'>"site1"</span>,
+  data <span class='op'>=</span> <span class='va'>data</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "Writing Gradient, iteration 2"
 #&gt; $gradient
 #&gt;                   [,1]
 #&gt; (Intercept) -0.1949795
@@ -259,9 +266,11 @@ the final estimates</p>
 #&gt; $beta_names
 #&gt; [1] "(Intercept)" "x1"          "x2"         
 #&gt; </div><div class='input'>
-<span class='fu'>estimate_new_beta</span>(<span class='no'>model_name</span>, <span class='no'>synced_folder</span>,
-<span class='kw'>all_site_names</span> <span class='kw'>=</span> <span class='st'>"site1"</span>)</div><div class='output co'>#&gt; [1] "Reading in gradients, iteration 2"</div><div class='output co'>#&gt; <span class='message'>epsiolon value</span></div><div class='output co'>#&gt; [1] 0.5638563
-#&gt; [1] "Model has converged!"</div><div class='output co'>#&gt; [1] "/var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpOqsHwq/file129746467535e/models/logistic_example.rds"</div><div class='input'><span class='fu'><a href='clear_model.html'>master_beta_file</a></span>(<span class='no'>model_name</span>, <span class='no'>synced_folder</span>)</div><div class='output co'>#&gt; [1] "/var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpOqsHwq/file129746467535e/betas/logistic_example-iteration0002.rds"</div></pre>
+<span class='fu'>estimate_new_beta</span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span>,
+all_site_names <span class='op'>=</span> <span class='st'>"site1"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "Reading in gradients, iteration 2"</div><div class='output co'>#&gt; <span class='message'>epsiolon value</span></div><div class='output co'>#&gt; [1] 0.5638563
+#&gt; [1] "Model has converged!"</div><div class='output co'>#&gt; [1] "/var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//Rtmp0c22Xf/file9579329d14ff/models/logistic_example.rds"</div><div class='input'><span class='fu'><a href='clear_model.html'>master_beta_file</a></span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "/var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//Rtmp0c22Xf/file9579329d14ff/betas/logistic_example-iteration0002.rds"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -277,7 +286,7 @@ the final estimates</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

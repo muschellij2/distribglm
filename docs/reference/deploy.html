@@ -80,18 +80,21 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/muschellij2/distribglm/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -117,35 +120,36 @@
     <p>Deploy GLM API on Digital Ocean (DO)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>do_provision_glm_api</span>(
-  <span class='no'>...</span>,
-  <span class='kw'>application_name</span> <span class='kw'>=</span> <span class='st'>"glm"</span>,
-  <span class='kw'>port</span> <span class='kw'>=</span> <span class='fl'>8000</span>,
-  <span class='kw'>example</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>r_packages</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>github_r_packages</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)
+    <pre class="usage"><span class='fu'>do_provision_glm_api</span><span class='op'>(</span>
+  <span class='va'>...</span>,
+  application_name <span class='op'>=</span> <span class='st'>"glm"</span>,
+  port <span class='op'>=</span> <span class='fl'>8000</span>,
+  example <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  r_packages <span class='op'>=</span> <span class='cn'>NULL</span>,
+  github_r_packages <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span>
 
-<span class='fu'>do_remove_glm_api</span>(<span class='no'>droplet</span>, <span class='kw'>application_name</span> <span class='kw'>=</span> <span class='st'>"glm"</span>)
+<span class='fu'>do_remove_glm_api</span><span class='op'>(</span><span class='va'>droplet</span>, application_name <span class='op'>=</span> <span class='st'>"glm"</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>do_deploy_glm_api</span>(
-  <span class='no'>...</span>,
-  <span class='kw'>application_name</span> <span class='kw'>=</span> <span class='st'>"glm"</span>,
-  <span class='kw'>port</span> <span class='kw'>=</span> <span class='fl'>8000</span>,
-  <span class='kw'>docs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>forward</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>example</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)
+<span class='fu'>do_deploy_glm_api</span><span class='op'>(</span>
+  <span class='va'>...</span>,
+  application_name <span class='op'>=</span> <span class='st'>"glm"</span>,
+  port <span class='op'>=</span> <span class='fl'>8000</span>,
+  docs <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  forward <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  example <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
 
-<span class='fu'>do_deploy_glm_api_only</span>(
-  <span class='no'>droplet</span>,
-  <span class='kw'>application_name</span> <span class='kw'>=</span> <span class='st'>"glm"</span>,
-  <span class='kw'>port</span> <span class='kw'>=</span> <span class='fl'>8000</span>,
-  <span class='kw'>docs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>forward</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
+<span class='fu'>do_deploy_glm_api_only</span><span class='op'>(</span>
+  <span class='va'>droplet</span>,
+  application_name <span class='op'>=</span> <span class='st'>"glm"</span>,
+  port <span class='op'>=</span> <span class='fl'>8000</span>,
+  docs <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  forward <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>do_list_plumber</span>(<span class='no'>droplet</span>)</pre>
+<span class='fu'>do_list_plumber</span><span class='op'>(</span><span class='va'>droplet</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -203,21 +207,23 @@ passed to <code>do_deploy_api</code> function from
     <p>A droplet instance</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>d</span> <span class='kw'>=</span> <span class='kw pkg'>analogsea</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/analogsea/man/droplets.html'>droplets</a></span>()
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>d</span>) <span class='kw'>==</span> <span class='fl'>0</span>) {
-  <span class='no'>droplet</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-} <span class='kw'>else</span> {
-  <span class='no'>droplet</span> <span class='kw'>=</span> <span class='no'>d</span><span class='kw'>[[</span><span class='fl'>1</span>]]
-}
-<span class='no'>droplet</span> <span class='kw'>=</span> <span class='fu'>do_provision_glm_api</span>(<span class='kw'>droplet</span> <span class='kw'>=</span> <span class='no'>droplet</span>)
-<span class='no'>droplet</span> <span class='kw'>=</span> <span class='fu'>do_deploy_glm_api_only</span>(<span class='no'>droplet</span>)
-<span class='no'>ip</span> <span class='kw'>=</span> <span class='kw pkg'>analogsea</span><span class='kw ns'>:::</span><span class='fu'>droplet_ip</span>(<span class='no'>droplet</span>)
-<span class='no'>applet_url</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"http://"</span>, <span class='no'>ip</span>, <span class='st'>"/"</span>, <span class='no'>droplet</span>$<span class='no'>application_name</span>)
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {
-    <span class='fu'><a href='https://rdrr.io/r/utils/browseURL.html'>browseURL</a></span>(<span class='no'>applet_url</span>)
-}
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>d</span> <span class='op'>=</span> <span class='fu'>analogsea</span><span class='fu'>::</span><span class='fu'><a href='https://analogsea.icu/reference/droplets.html'>droplets</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>)</span> <span class='op'>==</span> <span class='fl'>0</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='va'>droplet</span> <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>}</span> <span class='kw'>else</span> <span class='op'>{</span>
+  <span class='va'>droplet</span> <span class='op'>=</span> <span class='va'>d</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>
+<span class='op'>}</span>
+<span class='va'>droplet</span> <span class='op'>=</span> <span class='fu'>do_provision_glm_api</span><span class='op'>(</span>droplet <span class='op'>=</span> <span class='va'>droplet</span>, region <span class='op'>=</span> <span class='st'>"sfo3"</span><span class='op'>)</span>
+<span class='va'>droplet</span> <span class='op'>=</span> <span class='fu'>do_deploy_glm_api_only</span><span class='op'>(</span><span class='va'>droplet</span><span class='op'>)</span>
+<span class='va'>ip</span> <span class='op'>=</span> <span class='fu'>analogsea</span><span class='fu'>:::</span><span class='fu'>droplet_ip</span><span class='op'>(</span><span class='va'>droplet</span><span class='op'>)</span>
+<span class='va'>applet_url</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"http://"</span>, <span class='va'>ip</span>, <span class='st'>"/"</span>, <span class='va'>droplet</span><span class='op'>$</span><span class='va'>application_name</span>,
+<span class='st'>"/__docs__/"</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+    <span class='fu'><a href='https://rdrr.io/r/utils/browseURL.html'>browseURL</a></span><span class='op'>(</span><span class='va'>applet_url</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -233,7 +239,7 @@ passed to <code>do_deploy_api</code> function from
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

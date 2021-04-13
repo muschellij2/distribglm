@@ -80,18 +80,21 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/muschellij2/distribglm/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -117,19 +120,19 @@
     <p>Setup Model and Formula</p>
     </div>
 
-    <pre class="usage"><span class='fu'>setup_model</span>(
-  <span class='no'>model_name</span>,
-  <span class='no'>synced_folder</span>,
-  <span class='kw'>clear_model</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>formula</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>x1</span> + <span class='no'>x2</span>,
-  <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>(),
-  <span class='kw'>all_site_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>link</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>max_iterations</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>1e-09</span>
-)
+    <pre class="usage"><span class='fu'>setup_model</span><span class='op'>(</span>
+  <span class='va'>model_name</span>,
+  <span class='va'>synced_folder</span>,
+  clear_model <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  formula <span class='op'>=</span> <span class='va'>y</span> <span class='op'>~</span> <span class='va'>x1</span> <span class='op'>+</span> <span class='va'>x2</span>,
+  family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span><span class='op'>(</span><span class='op'>)</span>,
+  all_site_names <span class='op'>=</span> <span class='cn'>NULL</span>,
+  link <span class='op'>=</span> <span class='cn'>NULL</span>,
+  max_iterations <span class='op'>=</span> <span class='fl'>100</span>,
+  tolerance <span class='op'>=</span> <span class='fl'>1e-09</span>
+<span class='op'>)</span>
 
-<span class='fu'>make_family</span>(<span class='no'>family</span>, <span class='kw'>link</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+<span class='fu'>make_family</span><span class='op'>(</span><span class='va'>family</span>, link <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -178,12 +181,14 @@ model with same name) before creating new model</p></td>
     <p>A character path to a formula/model file</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>tdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
-<span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span>(<span class='no'>tdir</span>)
-<span class='no'>model_name</span> <span class='kw'>=</span> <span class='st'>"logistic_example"</span>
-<span class='no'>form_file</span> <span class='kw'>=</span> <span class='fu'>setup_model</span>(<span class='kw'>model_name</span> <span class='kw'>=</span> <span class='no'>model_name</span>,
-<span class='kw'>synced_folder</span> <span class='kw'>=</span> <span class='no'>tdir</span>,
-<span class='kw'>formula</span> <span class='kw'>=</span>  <span class='no'>y</span> ~ <span class='no'>x1</span> + <span class='no'>x2</span>, <span class='kw'>family</span> <span class='kw'>=</span>  <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>())</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>tdir</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span><span class='op'>(</span><span class='va'>tdir</span><span class='op'>)</span>
+<span class='va'>model_name</span> <span class='op'>=</span> <span class='st'>"logistic_example"</span>
+<span class='va'>form_file</span> <span class='op'>=</span> <span class='fu'>setup_model</span><span class='op'>(</span>model_name <span class='op'>=</span> <span class='va'>model_name</span>,
+synced_folder <span class='op'>=</span> <span class='va'>tdir</span>,
+formula <span class='op'>=</span>  <span class='va'>y</span> <span class='op'>~</span> <span class='va'>x1</span> <span class='op'>+</span> <span class='va'>x2</span>, family <span class='op'>=</span>  <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -199,7 +204,7 @@ model with same name) before creating new model</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

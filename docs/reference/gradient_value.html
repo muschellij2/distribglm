@@ -80,18 +80,21 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/muschellij2/distribglm/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -117,24 +120,24 @@
     <p>Estimate the update gradient value</p>
     </div>
 
-    <pre class="usage"><span class='fu'>gradient_value</span>(
-  <span class='kw'>beta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>data</span>,
-  <span class='no'>formula</span>,
-  <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>(),
-  <span class='kw'>iteration_number</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>shuffle_rows</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>link</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)
+    <pre class="usage"><span class='fu'>gradient_value</span><span class='op'>(</span>
+  beta <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>data</span>,
+  <span class='va'>formula</span>,
+  family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span><span class='op'>(</span><span class='op'>)</span>,
+  iteration_number <span class='op'>=</span> <span class='fl'>0</span>,
+  shuffle_rows <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  link <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span>
 
-<span class='fu'>use_glm_gradient_value</span>(
-  <span class='kw'>beta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>data</span>,
-  <span class='no'>formula</span>,
-  <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>(),
-  <span class='kw'>iteration_number</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>shuffle_rows</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+<span class='fu'>use_glm_gradient_value</span><span class='op'>(</span>
+  beta <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>data</span>,
+  <span class='va'>formula</span>,
+  family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span><span class='op'>(</span><span class='op'>)</span>,
+  iteration_number <span class='op'>=</span> <span class='fl'>0</span>,
+  shuffle_rows <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,14 +183,15 @@ for combining to create the population gradient (<code>u</code>), with length
 of the number of beta values</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>),
-<span class='kw'>pois_y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>0</span>),
-<span class='kw'>x2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>2.19021287072066</span>,
-       -<span class='fl'>0.344307138450805</span>, <span class='fl'>3.47215796952745</span>),
-<span class='kw'>x1</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>0.263859503846267</span>,
-       -<span class='fl'>0.985160029707486</span>, <span class='fl'>0.227262373184513</span>))
-<span class='fu'>gradient_value</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>, <span class='kw'>formula</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>x1</span> + <span class='no'>x2</span>,
-<span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"binomial"</span>)</div><div class='output co'>#&gt; $gradient
+    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
+pois_y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
+x2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>2.19021287072066</span>,
+       <span class='op'>-</span><span class='fl'>0.344307138450805</span>, <span class='fl'>3.47215796952745</span><span class='op'>)</span>,
+x1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.263859503846267</span>,
+       <span class='op'>-</span><span class='fl'>0.985160029707486</span>, <span class='fl'>0.227262373184513</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>gradient_value</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>data</span>, formula <span class='op'>=</span> <span class='va'>y</span> <span class='op'>~</span> <span class='va'>x1</span> <span class='op'>+</span> <span class='va'>x2</span>,
+family <span class='op'>=</span> <span class='st'>"binomial"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $gradient
 #&gt;                   [,1]
 #&gt; (Intercept) -0.3434747
 #&gt; x1           1.4794362
@@ -225,8 +229,9 @@ of the number of beta values</p>
 #&gt; 
 #&gt; $beta_names
 #&gt; [1] "(Intercept)" "x1"          "x2"         
-#&gt; </div><div class='input'><span class='fu'>gradient_value</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>, <span class='kw'>formula</span> <span class='kw'>=</span> <span class='no'>pois_y</span> ~ <span class='no'>x1</span> + <span class='no'>x2</span>,
-<span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"poisson"</span>)</div><div class='output co'>#&gt; $gradient
+#&gt; </div><div class='input'><span class='fu'>gradient_value</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>data</span>, formula <span class='op'>=</span> <span class='va'>pois_y</span> <span class='op'>~</span> <span class='va'>x1</span> <span class='op'>+</span> <span class='va'>x2</span>,
+family <span class='op'>=</span> <span class='st'>"poisson"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $gradient
 #&gt;                   [,1]
 #&gt; (Intercept)  1.5949810
 #&gt; x1           1.9242247
@@ -264,14 +269,15 @@ of the number of beta values</p>
 #&gt; 
 #&gt; $beta_names
 #&gt; [1] "(Intercept)" "x1"          "x2"         
-#&gt; </div><div class='input'><span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>),
-<span class='kw'>pois_y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>0</span>),
-<span class='kw'>x2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>2.19021287072066</span>,
-       -<span class='fl'>0.344307138450805</span>, <span class='fl'>3.47215796952745</span>),
-<span class='kw'>x1</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>0.263859503846267</span>,
-       -<span class='fl'>0.985160029707486</span>, <span class='fl'>0.227262373184513</span>))
-<span class='fu'>use_glm_gradient_value</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>, <span class='kw'>formula</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>x1</span> + <span class='no'>x2</span>,
-<span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>(<span class='kw'>link</span> <span class='kw'>=</span> <span class='st'>"probit"</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: glm.fit: algorithm did not converge</span></div><div class='output co'>#&gt; $gradient
+#&gt; </div><div class='input'><span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
+pois_y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
+x2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>2.19021287072066</span>,
+       <span class='op'>-</span><span class='fl'>0.344307138450805</span>, <span class='fl'>3.47215796952745</span><span class='op'>)</span>,
+x1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.263859503846267</span>,
+       <span class='op'>-</span><span class='fl'>0.985160029707486</span>, <span class='fl'>0.227262373184513</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>use_glm_gradient_value</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>data</span>, formula <span class='op'>=</span> <span class='va'>y</span> <span class='op'>~</span> <span class='va'>x1</span> <span class='op'>+</span> <span class='va'>x2</span>,
+family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span><span class='op'>(</span>link <span class='op'>=</span> <span class='st'>"probit"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: glm.fit: algorithm did not converge</span></div><div class='output co'>#&gt; $gradient
 #&gt; (Intercept)          x1          x2 
 #&gt;  -0.2152408   0.9270991   0.3622704 
 #&gt; 
@@ -305,7 +311,7 @@ of the number of beta values</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
