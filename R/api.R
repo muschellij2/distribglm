@@ -15,7 +15,6 @@ api_url = function(url = NULL) {
     url = Sys.getenv("DISTRIBGLM_URL", unset = NA)
     if (is.na(url)) url = NULL
   }
-
   if (is.null(url)) {
     url = "https://rsconnect.biostat.jhsph.edu/distribglm"
   }
