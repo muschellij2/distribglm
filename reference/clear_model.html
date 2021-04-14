@@ -149,6 +149,9 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>No return value, called for side effects.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>synced_folder</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
@@ -159,8 +162,8 @@
                         formula <span class='op'>=</span>  <span class='va'>y</span> <span class='op'>~</span> <span class='va'>x1</span> <span class='op'>+</span> <span class='va'>x2</span>, family <span class='op'>=</span>  <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>fnames</span> <span class='op'>=</span> <span class='fu'>folder_names</span><span class='op'>(</span><span class='va'>synced_folder</span><span class='op'>)</span>
 <span class='fu'>model_output_file</span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpmXceSR/file7b97ffe139c/models/logistic_example.rds"</div><div class='input'><span class='fu'>master_beta_file</span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpmXceSR/file7b97ffe139c/betas/logistic_example-iteration0001.rds"</div><div class='input'><span class='fu'>get_current_beta</span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpXftK1Y/file7ac47160d0/models/logistic_example.rds"</div><div class='input'><span class='fu'>master_beta_file</span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpXftK1Y/file7ac47160d0/betas/logistic_example-iteration0001.rds"</div><div class='input'><span class='fu'>get_current_beta</span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $iteration_number
 #&gt; [1] 1
 #&gt; </div><div class='input'><span class='fu'>clear_model</span><span class='op'>(</span><span class='va'>model_name</span>, <span class='va'>synced_folder</span><span class='op'>)</span>

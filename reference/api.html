@@ -244,12 +244,31 @@ get new estimate</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The <code>api_available_models</code> function returns the available
+models running or already run.</p>
+<p>The <code>api_get_current_beta</code> function returns the current beta
+estimates.</p>
+<p>The <code>api_model_trace</code> function returns a list of the values
+throughout iterations of the model fitting.</p>
+<p>The <code>api_model_specification</code> function returns a list of the
+parameters of the model specification, if the model is present.</p>
+<p>The <code>api_submit_gradient</code> function returns a list from the result of
+the API call.</p>
+<p>The <code>api_model_converged</code> function returns an indicator if
+the model converges or not.</p>
+<p>The <code>api_setup_model</code> function submits a model to set up on the
+server.</p>
+<p>The <code>api_clear_model</code> function clears out a model and returns the
+output from the API.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>api_url</span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "https://rsconnect.biostat.jhsph.edu/distribglm"</div><div class='input'><span class='fu'>api_set_url</span><span class='op'>(</span><span class='fu'>api_url</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "https://rsconnect.biostat.jhsph.edu/distribglm"</div><div class='input'><span class='fu'>api_available_models</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; named list()</div></pre>
+</div><div class='output co'>#&gt; named list()</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
