@@ -718,7 +718,7 @@ estimate_new_beta = function(
 #' @param model_name name of your model
 #' @param synced_folder synced folder to do computation
 #'
-#' @return NULL
+#' @return No return value, called for side effects.
 #' @export
 #' @examples
 #' synced_folder = tempfile()

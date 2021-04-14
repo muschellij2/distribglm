@@ -8,3 +8,7 @@
 0 errors | 0 warnings | 1 note
 
 * This is a new release.
+---
+Value added to examples.  ISBN added for method in work.  Removed any :::.
+Removed ssh package dependency as it was not used directly (it was used by inheritance of
+dependency).

@@ -28,6 +28,9 @@ get_beta(model_name, synced_folder, iteration_number)
 
 \item{iteration_number}{number of fitting iteration, used for tracking}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Clear Out Model and Other Helper Functions
 }

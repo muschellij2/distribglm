@@ -104,6 +104,31 @@ is submitted to the server, but returned to see what would be submitted.}
 \item{wait_time}{Time, in seconds, to wait until to try to
 get new estimate}
 }
+\value{
+The \code{api_available_models} function returns the available
+models running or already run.
+
+The \code{api_get_current_beta} function returns the current beta
+estimates.
+
+The \code{api_model_trace} function returns a list of the values
+throughout iterations of the model fitting.
+
+The \code{api_model_specification} function returns a list of the
+parameters of the model specification, if the model is present.
+
+The \code{api_submit_gradient} function returns a list from the result of
+the API call.
+
+The \code{api_model_converged} function returns an indicator if
+the model converges or not.
+
+The \code{api_setup_model} function submits a model to set up on the
+server.
+
+The \code{api_clear_model} function clears out a model and returns the
+output from the API.
+}
 \description{
 API Functions and wrappers
 }
@@ -111,4 +136,5 @@ API Functions and wrappers
 api_url()
 api_set_url(api_url())
 api_available_models()
+
 }

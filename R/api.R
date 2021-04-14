@@ -36,12 +36,15 @@ httr_no_check_ssl = function(expr) {
 }
 
 #' @rdname api
+#' @return The `api_available_models` function returns the available
+#' models running or already run.
 #' @export
 api_available_models = function(
   url = api_url(),
   config = list(),
   ...) {
 
+  api_dep_check()
   b = httr_no_check_ssl({
     httr::GET(
       paste0(url, "/available_models"),
@@ -54,6 +57,8 @@ api_available_models = function(
 }
 
 #' @rdname api
+#' @return The `api_get_current_beta` function returns the current beta
+#' estimates.
 #' @export
 api_get_current_beta = function(
   model_name,
@@ -84,6 +89,8 @@ api_get_current_beta = function(
 }
 
 #' @rdname api
+#' @return The `api_model_trace` function returns a list of the values
+#' throughout iterations of the model fitting.
 #' @export
 api_model_trace = function(
   model_name,
@@ -118,6 +125,9 @@ api_model_trace = function(
 
 #' @rdname api
 #' @export
+#'
+#' @return The `api_model_specification` function returns a list of the
+#' parameters of the model specification, if the model is present.
 api_model_specification = function(
   model_name,
   url = api_url(),
@@ -173,6 +183,9 @@ api_model_specification = function(
 #' api_url()
 #' api_set_url(api_url())
 #' api_available_models()
+#'
+#' @return The `api_submit_gradient` function returns a list from the result of
+#' the API call.
 api_submit_gradient = function(
   model_name,
   url = api_url(),
@@ -260,6 +273,8 @@ api_submit_gradient = function(
 
 #' @rdname api
 #' @export
+#' @return The `api_model_converged` function returns an indicator if
+#' the model converges or not.
 api_model_converged = function(
   model_name,
   url = api_url(),
@@ -303,6 +318,8 @@ api_model_converged = function(
 
 #' @rdname api
 #' @export
+#' @return The `api_setup_model` function submits a model to set up on the
+#' server.
 api_setup_model = function(
   model_name,
   url = api_url(),
@@ -330,7 +347,7 @@ api_setup_model = function(
                                       ...)
   }
   stopifnot(length(model_name) == 1)
-  res =httr_no_check_ssl({
+  res = httr_no_check_ssl({
     httr::PUT(
       paste0(url, "/setup_model"),
       body = list(
@@ -351,6 +368,8 @@ api_setup_model = function(
 
 #' @rdname api
 #' @export
+#' @return The `api_clear_model` function clears out a model and returns the
+#' output from the API.
 api_clear_model = function(model_name,
                            url = api_url(),
                            config = list(),
@@ -386,6 +405,8 @@ api_estimate_model = function(
   config = list(),
   verbose = TRUE,
   ...) {
+  api_dep_check()
+
   beta = list(converged = FALSE)
   while (!beta$converged) {
     # run at either site

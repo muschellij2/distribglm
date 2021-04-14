@@ -6,11 +6,8 @@
 #' works.
 #'
 #' @param x,y If `x` is NULL, will return `y`; otherwise returns `x`.
-#' @export
 #' @name op-null-default
-#' @examples
-#' 1 %||% 2
-#' NULL %||% 2
+#' @return A vector of `x` or `y`
 `%||%` <- function(x, y) {
   if (is.null(x)) y else x
 }

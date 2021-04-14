@@ -26,6 +26,7 @@ droplet_capture = function(droplet, command, ...) {
   return(have_remotes)
 }
 
+
 #' Deploy GLM API on Digital Ocean (DO)
 #'
 #' @param ... arguments to pass to \code{do_provision} from
@@ -53,20 +54,20 @@ droplet_capture = function(droplet, command, ...) {
 #' @export
 #' @examples
 #' \dontrun{
-#' d = analogsea::droplets()
-#' if (length(d) == 0) {
-#'   droplet = NULL
-#' } else {
-#'   droplet = d[[1]]
-#' }
-#' droplet = do_provision_glm_api(droplet = droplet, region = "sfo3")
-#' droplet = do_deploy_glm_api_only(droplet)
-#' ip = analogsea:::droplet_ip(droplet)
-#' applet_url = paste0("http://", ip, "/", droplet$application_name,
-#' "/__docs__/")
-#' if (interactive()) {
+#'   d = analogsea::droplets()
+#'   if (length(d) == 0) {
+#'     droplet = NULL
+#'   } else {
+#'     droplet = d[[1]]
+#'   }
+#'   droplet = do_provision_glm_api(droplet = droplet, region = "sfo3")
+#'   droplet = do_deploy_glm_api_only(droplet)
+#'   ip = droplet$network$v4[[1]]$ip_address
+#'   applet_url = paste0("http://", ip, "/", droplet$application_name,
+#'                       "/__docs__/")
+#'   if (interactive()) {
 #'     browseURL(applet_url)
-#' }
+#'   }
 #' }
 do_provision_glm_api = function(
   ...,
@@ -204,6 +205,7 @@ do_deploy_glm_api = function(
   example = FALSE
 ) {
 
+  deploy_check()
   droplet = do_provision_glm_api(
     ...,
     port = port,
